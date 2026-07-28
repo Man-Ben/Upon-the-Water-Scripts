@@ -7,7 +7,7 @@ public class Zoom : MonoBehaviour
     
     [SerializeField] float zoomSpeed;
 
-    void Update()
+    void LateUpdate()
     {
         Zooming();
         resetToBoundary();
@@ -17,18 +17,18 @@ public class Zoom : MonoBehaviour
     {
         float zoomInput = Input.GetAxis("Zoom");
         
-        transform.Translate((Vector3.down + Vector3.forward) * zoomInput * zoomSpeed);
+        transform.Translate( Vector3.forward * zoomInput * zoomSpeed);
     }
 
     void resetToBoundary()
     {
         float minHeight = 210f;
-        float maxHeight = 450f;
+        float maxHeight = 500f;
 
-        if(transform.position.y <= minHeight)
+        if(transform.position.y < minHeight)
             transform.position = new Vector3(transform.position.x, minHeight, transform.position.z);
 
-        if(transform.position.y >= maxHeight)
+        if(transform.position.y > maxHeight)
             transform.position = new Vector3(transform.position.x, maxHeight, transform.position.z);
     }
 }

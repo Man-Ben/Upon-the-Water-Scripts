@@ -30,4 +30,5 @@ public class PlayerController : MonoBehaviour
         transform.Translate(Vector3.right * horizontalInput * playerSpeed);
         transform.Rotate(Vector3.up * rotationSpeed * rotationInput);
     }
+    
 }
