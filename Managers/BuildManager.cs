@@ -6,6 +6,7 @@ public class BuildManager : MonoBehaviour
 {
     Dictionary<Vector3, GameObject> raftTiles = new();
 
+    GameObject guideObject;
 
     public static BuildManager Instance {get; private set;}
 
@@ -20,8 +21,32 @@ public class BuildManager : MonoBehaviour
         Instance = this;
 
         LoadRaft();
+    }
+    
+    void Update()
+    {
+        if(guideObject != null)
+        {
+            BuildGuideManager.Instance.FollowMouse(guideObject);
+        
+            if(Input.GetMouseButtonDown(0))
+            {
+                Instantiate(Raft.Instance.simpleRaftTile, guideObject.transform.position, guideObject.transform.rotation);
+            }
 
-        PlaceGuideObject();
+            if(Input.GetMouseButtonDown(1))
+            {
+                Destroy(guideObject);
+            }
+        }
+
+        if(Input.GetKeyDown(KeyCode.B) && guideObject == null)
+        {
+            guideObject = PlaceGuideObject();
+
+            BuildGuideManager.Instance.ChangeColor(guideObject);
+        }
+        
     }
 
     void LoadRaft()
@@ -38,11 +63,9 @@ public class BuildManager : MonoBehaviour
         
     }
 
-    public void PlaceGuideObject()
+    public GameObject PlaceGuideObject()
     {
-        Vector3 mousePosition = Camera.main.ScreenToWorldPoint(Input.mousePosition);
-
-        Instantiate(Raft.Instance.simpleRaftTile, mousePosition, quaternion.identity);
+        return Instantiate(Raft.Instance.simpleRaftTile);        
     }
 
 }
