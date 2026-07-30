@@ -1,8 +1,9 @@
+using System;
 using UnityEngine;
 
 public class BuildGuideManager : MonoBehaviour
 {
-    
+    public Vector3Int gridPosition;
 
     public static BuildGuideManager Instance {get; private set;}
     void Awake()
@@ -17,7 +18,7 @@ public class BuildGuideManager : MonoBehaviour
         
     }
 
-    public void ChangeColor(GameObject guideObject)
+    public void ChangeColor(GameObject guideObject, Color inputColor)
     {
         Renderer renderer;
         Color color;
@@ -25,9 +26,9 @@ public class BuildGuideManager : MonoBehaviour
         renderer = guideObject.GetComponent<Renderer>();
 
         color = renderer.material.color;
-        color.a = 0.4f;
+        color.a = 0.3f;
 
-        renderer.material.color = Color.ghostWhite;
+        renderer.material.color = inputColor;
     }
 
     public void FollowMouse(GameObject guideObject)
@@ -37,9 +38,12 @@ public class BuildGuideManager : MonoBehaviour
         if(Physics.Raycast(ray, out RaycastHit hit))
         {
             Vector3 position = hit.point;
-            position.y = 5;
+            position.y = 3;
 
             guideObject.transform.position = position;
+
+            gridPosition = new Vector3Int(Mathf.RoundToInt(guideObject.transform.position.x / 41f), 3, Mathf.RoundToInt(guideObject.transform.position.z / 41));
         }
     }
+
 }

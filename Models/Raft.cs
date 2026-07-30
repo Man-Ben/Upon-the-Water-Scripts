@@ -7,7 +7,7 @@ public class Raft : MonoBehaviour
 
     [Space]
     [Header ("Tile Size")]
-    public float simpleTileSize = 41.5f;
+    public int simpleTileSize = 41;
 
 
     public static Raft Instance {get; private set;}
