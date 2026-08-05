@@ -18,6 +18,22 @@ public class BuildGuideManager : MonoBehaviour
         
     }
 
+    public GameObject PlaceGuideObject()
+    {
+        Ray ray = Camera.main.ScreenPointToRay(Input.mousePosition);
+
+        if(Physics.Raycast(ray, out RaycastHit hit))
+        {
+            Vector3 position = hit.point;
+            position.y = 3;
+
+            return Instantiate(Raft.Instance.simpleRaftTile, position, transform.rotation);
+        }
+
+        return null;
+    }
+
+
     public void ChangeColor(GameObject guideObject, Color inputColor)
     {
         Renderer renderer;
@@ -25,10 +41,11 @@ public class BuildGuideManager : MonoBehaviour
 
         renderer = guideObject.GetComponent<Renderer>();
 
-        color = renderer.material.color;
-        color.a = 0.3f;
+        color = inputColor;
+        color.a = 0.8f;
 
-        renderer.material.color = inputColor;
+        renderer.material.color = color;
+        
     }
 
     public void FollowMouse(GameObject guideObject)
@@ -40,10 +57,20 @@ public class BuildGuideManager : MonoBehaviour
             Vector3 position = hit.point;
             position.y = 3;
 
-            guideObject.transform.position = position;
+            gridPosition = WorldToCell(position);
 
-            gridPosition = new Vector3Int(Mathf.RoundToInt(guideObject.transform.position.x / 41f), 3, Mathf.RoundToInt(guideObject.transform.position.z / 41));
+            guideObject.transform.position = CellToWorld(gridPosition) + Vector3.up * 1;
         }
+    }
+
+    Vector3Int WorldToCell(Vector3 mousePosition)
+    {
+        return new Vector3Int(Mathf.RoundToInt(mousePosition.x / 41f), 3, Mathf.RoundToInt(mousePosition.z / 41));
+    }
+
+    Vector3Int CellToWorld(Vector3Int gridPosition)
+    {
+        return new Vector3Int(Mathf.RoundToInt(gridPosition.x * 41f), 3, Mathf.RoundToInt(gridPosition.z * 41));
     }
 
 }

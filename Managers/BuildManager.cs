@@ -6,8 +6,6 @@ public class BuildManager : MonoBehaviour
 {
     Dictionary<Vector3Int, GameObject> raftTiles = new();
 
-    GameObject guideObject;
-
     public static BuildManager Instance {get; private set;}
 
     void Awake()
@@ -25,36 +23,7 @@ public class BuildManager : MonoBehaviour
     
     void Update()
     {
-        if(guideObject != null)
-        {
-            BuildGuideManager.Instance.FollowMouse(guideObject);
-        
-            if(CanPlace())
-            {
-                BuildGuideManager.Instance.ChangeColor(guideObject, Color.green);
-
-                if(Input.GetMouseButtonDown(0))
-                {
-                    Instantiate(Raft.Instance.simpleRaftTile,  new Vector3(guideObject.transform.position.x, 3, guideObject.transform.position.z), guideObject.transform.rotation);
-                    raftTiles.Add(BuildGuideManager.Instance.gridPosition, Raft.Instance.simpleRaftTile);
-                }
-            }
-
-            if(Input.GetMouseButtonDown(1))
-            {
-                Destroy(guideObject);
-            }
-        }
-
-        if(Input.GetKeyDown(KeyCode.B) && guideObject == null)
-        {
-            guideObject = PlaceGuideObject();
-
-            guideObject.GetComponent<Collider>().enabled = false;
-
-           // BuildGuideManager.Instance.ChangeColor(guideObject, Color.ghostWhite);
-        }
-        
+              
     }
 
     void LoadRaft()
@@ -70,23 +39,9 @@ public class BuildManager : MonoBehaviour
             }
     }
 
-    public GameObject PlaceGuideObject()
-    {
-        Ray ray = Camera.main.ScreenPointToRay(Input.mousePosition);
-
-        if(Physics.Raycast(ray, out RaycastHit hit))
-        {
-            Vector3 position = hit.point;
-            position.y = 3;
-
-            return Instantiate(Raft.Instance.simpleRaftTile, position, transform.rotation);
-        }
-
-        return null;
-    }
 
 
-    bool CanPlace()
+    public bool CanPlace(GameObject guideObject)
     {
         if(raftTiles.ContainsKey(BuildGuideManager.Instance.gridPosition))
         {
@@ -95,5 +50,14 @@ public class BuildManager : MonoBehaviour
         }
 
         return true;
+    }
+
+    public void PlaceBuilding(GameObject guideObject)
+    {
+        Vector3 position = new Vector3(guideObject.transform.position.x, 3, guideObject.transform.position.z);
+
+        Instantiate(Raft.Instance.simpleRaftTile,  position, guideObject.transform.rotation);
+        
+        raftTiles.Add(BuildGuideManager.Instance.gridPosition, Raft.Instance.simpleRaftTile);
     }
 }
