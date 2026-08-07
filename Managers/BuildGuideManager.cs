@@ -6,6 +6,7 @@ public class BuildGuideManager : MonoBehaviour
     public Vector3Int gridPosition;
 
     public static BuildGuideManager Instance {get; private set;}
+
     void Awake()
     {
         if(Instance != null && Instance != this)
@@ -27,7 +28,7 @@ public class BuildGuideManager : MonoBehaviour
             Vector3 position = hit.point;
             position.y = 3;
 
-            return Instantiate(Raft.Instance.simpleRaftTile, position, transform.rotation);
+            return Instantiate(BuildingCategories.Instance.raft.simpleRaftTile, position, transform.rotation);
         }
 
         return null;

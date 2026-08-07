@@ -13,12 +13,14 @@ public class BuildUIManager : MonoBehaviour
 
     [Space]
     [Header("Categories")]
-    [SerializeField] List<Button> buildCategories = new List<Button>();
-
-
-    string[] categoryNames = {"Raft Tile", "Water Purifier", "Food", "Expedition"};
+    [SerializeField] List<Button> buildCategoryButtons = new List<Button>();
 
     GameObject guideObject;
+
+    void Start()
+    {
+        JsonManager.Instance.SortNameByCategory();
+    }
 
     void Update()
     {
@@ -33,9 +35,9 @@ public class BuildUIManager : MonoBehaviour
         foreach(Transform child in contentTransform)
             Destroy(child.gameObject);
 
-        scrollView.gameObject.SetActive(false);
+        scrollView.gameObject.SetActive(false);   
         
-        foreach(var category in buildCategories)
+        foreach(var category in buildCategoryButtons)
                 category.gameObject.SetActive(false);
     }
 
@@ -69,23 +71,33 @@ public class BuildUIManager : MonoBehaviour
     {
         if(Input.GetKeyDown(KeyCode.B))
         {
-
-            for(int i = 0; i < buildCategories.Count; i++)
+            for(int i = 0; i < buildCategoryButtons.Count; i++)
             {
-                buildCategories[i].gameObject.SetActive(true);
-                
-            }
+                int index = i;
 
-            DisplayBuildings(1);
+                buildCategoryButtons[i].gameObject.SetActive(true);
+                buildCategoryButtons[i].onClick.AddListener(() => OnCategoryButtonClicked(index));
+            }
         }
     }
 
-    public void DisplayBuildings(int index)
+    void OnCategoryButtonClicked(int index)
     {
-        var tmp = Instantiate(buildButtonPrefab, contentTransform);
+        
+        Category catByIndex = GetCategory(index);
 
-        tmp.GetComponentInChildren<TMP_Text>().text = categoryNames[index];
-       
-        tmp.onClick.AddListener(OnPrefabButtonClicked);
+        foreach(string category in JsonManager.Instance.catalog[catByIndex])
+        {
+            var tmp = Instantiate(buildButtonPrefab, contentTransform);
+
+            tmp.GetComponentInChildren<TMP_Text>().text = category;
+
+            tmp.onClick.AddListener(OnPrefabButtonClicked);
+        }
+    }
+
+    Category GetCategory(int index)
+    {
+        return (Category)index;
     }
 }

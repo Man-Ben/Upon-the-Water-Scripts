@@ -8,7 +8,7 @@ public class BuildManager : MonoBehaviour
 
     public static BuildManager Instance {get; private set;}
 
-    void Awake()
+    void Start()
     {
         if(Instance != null && Instance != this)
         {
@@ -28,14 +28,16 @@ public class BuildManager : MonoBehaviour
 
     void LoadRaft()
     {
+        JsonManager.Instance.ReadBuildingStats("SimpleTile");
+
         for(int i = 0; i < 5; i++)
             for(int j = 0; j < 5; j++)
             {
-                Vector3Int position = new Vector3Int(i * Raft.Instance.simpleTileSize, 3, j * Raft.Instance.simpleTileSize);
+                Vector3Int position = new Vector3Int(i * JsonManager.Instance.buildingStats.dimensions.length, 3 , j * JsonManager.Instance.buildingStats.dimensions.width);
 
-                Instantiate(Raft.Instance.simpleRaftTile, position, quaternion.identity);
+                Instantiate(BuildingCategories.Instance.raft.simpleRaftTile, position, quaternion.identity);
                 
-                raftTiles.Add(new Vector3Int(i, 3, j), Raft.Instance.simpleRaftTile);
+                raftTiles.Add(new Vector3Int(i, 3, j), BuildingCategories.Instance.raft.simpleRaftTile);
             }
     }
 
@@ -56,8 +58,8 @@ public class BuildManager : MonoBehaviour
     {
         Vector3 position = new Vector3(guideObject.transform.position.x, 3, guideObject.transform.position.z);
 
-        Instantiate(Raft.Instance.simpleRaftTile,  position, guideObject.transform.rotation);
+        Instantiate(BuildingCategories.Instance.raft.simpleRaftTile,  position, guideObject.transform.rotation);
         
-        raftTiles.Add(BuildGuideManager.Instance.gridPosition, Raft.Instance.simpleRaftTile);
+        raftTiles.Add(BuildGuideManager.Instance.gridPosition, BuildingCategories.Instance.raft.simpleRaftTile);
     }
 }
