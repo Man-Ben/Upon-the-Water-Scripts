@@ -17,8 +17,15 @@ public class BuildUIManager : MonoBehaviour
 
     GameObject guideObject;
 
+    Category catByIndex;
+    
+    int index;
+
+    List<Button> prefabButtons = new();
+
     void Start()
     {
+        BuildingCategories.Instance.InitializeBuildingCategories();
         JsonManager.Instance.SortNameByCategory();
     }
 
@@ -27,13 +34,20 @@ public class BuildUIManager : MonoBehaviour
         BuildControls();
     }
 
-    void OnPrefabButtonClicked()
+    void OnPrefabButtonClicked(Button button)
     {
-        guideObject = BuildGuideManager.Instance.PlaceGuideObject();
+        
+        index = prefabButtons.IndexOf(button);
+
+        guideObject = BuildGuideManager.Instance.PlaceGuideObject(BuildingCategories.Instance.buildings[catByIndex][index]);
+
         guideObject.GetComponent<Collider>().enabled = false;
 
         foreach(Transform child in contentTransform)
+        {
             Destroy(child.gameObject);
+            prefabButtons.Clear();
+        }
 
         scrollView.gameObject.SetActive(false);   
         
@@ -53,7 +67,7 @@ public class BuildUIManager : MonoBehaviour
 
                 if(Input.GetMouseButtonDown(0))
                 {
-                    BuildManager.Instance.PlaceBuilding(guideObject);
+                    BuildManager.Instance.PlaceBuilding(guideObject, BuildingCategories.Instance.buildings[catByIndex][index]);
                 }
             }
 
@@ -84,15 +98,17 @@ public class BuildUIManager : MonoBehaviour
     void OnCategoryButtonClicked(int index)
     {
         
-        Category catByIndex = GetCategory(index);
+        catByIndex = GetCategory(index);
 
-        foreach(string category in JsonManager.Instance.catalog[catByIndex])
+        foreach(string nameByCategory in JsonManager.Instance.catalog[catByIndex])
         {
             var tmp = Instantiate(buildButtonPrefab, contentTransform);
 
-            tmp.GetComponentInChildren<TMP_Text>().text = category;
+            tmp.GetComponentInChildren<TMP_Text>().text = nameByCategory;
 
-            tmp.onClick.AddListener(OnPrefabButtonClicked);
+            tmp.onClick.AddListener(() => OnPrefabButtonClicked(tmp));
+            
+            prefabButtons.Add(tmp);
         }
     }
 

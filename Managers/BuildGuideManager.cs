@@ -19,7 +19,7 @@ public class BuildGuideManager : MonoBehaviour
         
     }
 
-    public GameObject PlaceGuideObject()
+    public GameObject PlaceGuideObject(GameObject buildingType)
     {
         Ray ray = Camera.main.ScreenPointToRay(Input.mousePosition);
 
@@ -28,7 +28,7 @@ public class BuildGuideManager : MonoBehaviour
             Vector3 position = hit.point;
             position.y = 3;
 
-            return Instantiate(BuildingCategories.Instance.raft.simpleRaftTile, position, transform.rotation);
+            return Instantiate(buildingType, position, transform.rotation);
         }
 
         return null;

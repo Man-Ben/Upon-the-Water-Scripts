@@ -35,9 +35,9 @@ public class BuildManager : MonoBehaviour
             {
                 Vector3Int position = new Vector3Int(i * JsonManager.Instance.buildingStats.dimensions.length, 3 , j * JsonManager.Instance.buildingStats.dimensions.width);
 
-                Instantiate(BuildingCategories.Instance.raft.simpleRaftTile, position, quaternion.identity);
+                Instantiate(BuildingCategories.Instance.raftTiles[0], position, quaternion.identity);
                 
-                raftTiles.Add(new Vector3Int(i, 3, j), BuildingCategories.Instance.raft.simpleRaftTile);
+                raftTiles.Add(new Vector3Int(i, 3, j), BuildingCategories.Instance.raftTiles[0]);
             }
     }
 
@@ -54,12 +54,12 @@ public class BuildManager : MonoBehaviour
         return true;
     }
 
-    public void PlaceBuilding(GameObject guideObject)
+    public void PlaceBuilding(GameObject guideObject, GameObject buildingToPlace)
     {
         Vector3 position = new Vector3(guideObject.transform.position.x, 3, guideObject.transform.position.z);
 
-        Instantiate(BuildingCategories.Instance.raft.simpleRaftTile,  position, guideObject.transform.rotation);
+        Instantiate(buildingToPlace,  position, guideObject.transform.rotation);
         
-        raftTiles.Add(BuildGuideManager.Instance.gridPosition, BuildingCategories.Instance.raft.simpleRaftTile);
+        raftTiles.Add(BuildGuideManager.Instance.gridPosition, buildingToPlace);
     }
 }

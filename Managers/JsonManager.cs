@@ -1,8 +1,6 @@
 using System;
 using System.Collections.Generic;
-using System.IO;
 using UnityEngine;
-using UnityEngine.UI;
 
 public class JsonManager : MonoBehaviour
 {
@@ -44,7 +42,7 @@ public class JsonManager : MonoBehaviour
         foreach(TextAsset textAsset in textAssets)
         {
             buildingStats = JsonUtility.FromJson<BuildingStats>(textAsset.text);
-            Debug.Log($"{buildingStats.category} - {buildingStats.buildingName}");
+
             catalog[buildingStats.category].Add(buildingStats.buildingName);
         }
             
