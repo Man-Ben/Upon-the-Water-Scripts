@@ -4,7 +4,7 @@ using UnityEngine;
 
 public class BuildManager : MonoBehaviour
 {
-    Dictionary<Vector3Int, GameObject> raftTiles = new();
+    [SerializeField] public Dictionary<Vector3Int, GameObject> OccupiedCells = new();
 
     public static BuildManager Instance {get; private set;}
 
@@ -20,11 +20,6 @@ public class BuildManager : MonoBehaviour
 
         LoadRaft();
     }
-    
-    void Update()
-    {
-              
-    }
 
     void LoadRaft()
     {
@@ -33,24 +28,35 @@ public class BuildManager : MonoBehaviour
         for(int i = 0; i < 5; i++)
             for(int j = 0; j < 5; j++)
             {
-                Vector3Int position = new Vector3Int(i * JsonManager.Instance.buildingStats.dimensions.length, 3 , j * JsonManager.Instance.buildingStats.dimensions.width);
+                Vector3Int position = new Vector3Int(i * 3, 3 , j * 3);
 
                 Instantiate(BuildingCategories.Instance.raftTiles[0], position, quaternion.identity);
                 
-                raftTiles.Add(new Vector3Int(i, 3, j), BuildingCategories.Instance.raftTiles[0]);
+                OccupiedCells.Add(position, BuildingCategories.Instance.raftTiles[0]); 
             }
     }
 
 
 
-    public bool CanPlace(GameObject guideObject)
+    public bool CanPlace(GameObject guideObject, Category category, int index)
     {
-        if(raftTiles.ContainsKey(BuildGuideManager.Instance.gridPosition))
+        for(int i = 0; i < JsonManager.Instance.buildingCatalog[category][index].footprint.x; i++)
         {
-            BuildGuideManager.Instance.ChangeColor(guideObject, Color.red);
-            return false;
+            for(int j = 0; j < JsonManager.Instance.buildingCatalog[category][index].footprint.y; j++)
+            {
+                Vector3Int cell = BuildGuideManager.Instance.gridPosition + new Vector3Int(i * 3, 3, j * 3);
+
+                Debug.Log(BuildingRules.Instance.IsCellFree(cell));
+
+                if(!BuildingRules.Instance.IsCellFree(cell))
+                {
+                    BuildGuideManager.Instance.ChangeColor(guideObject, Color.red);
+                    return false;
+                }
+            } 
         }
 
+        BuildGuideManager.Instance.ChangeColor(guideObject, Color.green);
         return true;
     }
 
@@ -58,8 +64,8 @@ public class BuildManager : MonoBehaviour
     {
         Vector3 position = new Vector3(guideObject.transform.position.x, 3, guideObject.transform.position.z);
 
-        Instantiate(buildingToPlace,  position, guideObject.transform.rotation);
+        Instantiate(buildingToPlace, position, guideObject.transform.rotation);
         
-        raftTiles.Add(BuildGuideManager.Instance.gridPosition, buildingToPlace);
+        OccupiedCells.Add(BuildGuideManager.Instance.gridPosition, buildingToPlace);
     }
 }

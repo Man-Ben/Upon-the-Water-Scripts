@@ -1,19 +1,14 @@
 using System;
+using UnityEngine;
 
 [Serializable]
 public class BuildingStats
 {
     public string buildingName;
     public Category category;
-    public Dimensions dimensions;
+    public Vector2Int footprint;
 }
 
-[Serializable]
-public struct Dimensions
-{
-    public int length;
-    public int width;
-}
 
 [Serializable]
 public enum Category

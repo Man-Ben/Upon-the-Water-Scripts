@@ -23,12 +23,6 @@ public class BuildUIManager : MonoBehaviour
 
     List<Button> prefabButtons = new();
 
-    void Start()
-    {
-        BuildingCategories.Instance.InitializeBuildingCategories();
-        JsonManager.Instance.SortNameByCategory();
-    }
-
     void Update()
     {
         BuildControls();
@@ -61,9 +55,9 @@ public class BuildUIManager : MonoBehaviour
         {
             BuildGuideManager.Instance.FollowMouse(guideObject);
         
-            if(BuildManager.Instance.CanPlace(guideObject))
+            if(BuildManager.Instance.CanPlace(guideObject, catByIndex, index))
             {
-                BuildGuideManager.Instance.ChangeColor(guideObject, Color.green);
+                
 
                 if(Input.GetMouseButtonDown(0))
                 {
@@ -100,11 +94,11 @@ public class BuildUIManager : MonoBehaviour
         
         catByIndex = GetCategory(index);
 
-        foreach(string nameByCategory in JsonManager.Instance.catalog[catByIndex])
+        foreach(BuildingStats nameByCategory in JsonManager.Instance.buildingCatalog[catByIndex])
         {
             var tmp = Instantiate(buildButtonPrefab, contentTransform);
 
-            tmp.GetComponentInChildren<TMP_Text>().text = nameByCategory;
+            tmp.GetComponentInChildren<TMP_Text>().text = nameByCategory.buildingName;
 
             tmp.onClick.AddListener(() => OnPrefabButtonClicked(tmp));
             

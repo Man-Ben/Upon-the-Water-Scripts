@@ -23,6 +23,8 @@ public class BuildingCategories : MonoBehaviour
         }
         
         Instance = this;
+
+        InitializeBuildingCategories();
     }
 
     public void InitializeBuildingCategories()

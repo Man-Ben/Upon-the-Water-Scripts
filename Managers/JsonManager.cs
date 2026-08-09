@@ -8,8 +8,7 @@ public class JsonManager : MonoBehaviour
 
     public BuildingStats buildingStats {get; set;}
 
-    [SerializeField] public Dictionary<Category, List<string>> catalog; //Later replace this with icon names
-
+    [SerializeField] public Dictionary<Category, List<BuildingStats>> buildingCatalog;
     void Awake()
     {
         if(Instance != null && Instance != this)
@@ -19,6 +18,8 @@ public class JsonManager : MonoBehaviour
         }
 
         Instance = this;
+
+        SortDataByCategory();
     }
 
     public BuildingStats ReadBuildingStats(string buildingID)
@@ -30,20 +31,20 @@ public class JsonManager : MonoBehaviour
         return buildingStats;
     }
 
-    public void SortNameByCategory()
+    public void SortDataByCategory()
     {
         TextAsset[] textAssets = Resources.LoadAll<TextAsset>($"Buildings");
 
-        catalog = new Dictionary<Category, List<string>>();
+        buildingCatalog = new Dictionary<Category, List<BuildingStats>>();
 
         foreach(Category category in Enum.GetValues(typeof(Category)))
-            catalog.Add(category, new List<string>());
-
+            buildingCatalog.Add(category, new List<BuildingStats>());
+        
         foreach(TextAsset textAsset in textAssets)
         {
             buildingStats = JsonUtility.FromJson<BuildingStats>(textAsset.text);
 
-            catalog[buildingStats.category].Add(buildingStats.buildingName);
+            buildingCatalog[buildingStats.category].Add(buildingStats);
         }
             
     }

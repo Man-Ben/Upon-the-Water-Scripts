@@ -22,8 +22,8 @@ public class Zoom : MonoBehaviour
 
     void resetToBoundary()
     {
-        float minHeight = 210f;
-        float maxHeight = 500f;
+        float minHeight = 20f;
+        float maxHeight = 210f;
 
         if(transform.position.y < minHeight)
             transform.position = new Vector3(transform.position.x, minHeight, transform.position.z);

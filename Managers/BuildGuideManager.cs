@@ -66,12 +66,12 @@ public class BuildGuideManager : MonoBehaviour
 
     Vector3Int WorldToCell(Vector3 mousePosition)
     {
-        return new Vector3Int(Mathf.RoundToInt(mousePosition.x / 41f), 3, Mathf.RoundToInt(mousePosition.z / 41));
+        return new Vector3Int(Mathf.RoundToInt(mousePosition.x / 3), 3, Mathf.RoundToInt(mousePosition.z / 3));
     }
 
     Vector3Int CellToWorld(Vector3Int gridPosition)
     {
-        return new Vector3Int(Mathf.RoundToInt(gridPosition.x * 41f), 3, Mathf.RoundToInt(gridPosition.z * 41));
+        return new Vector3Int(Mathf.RoundToInt(gridPosition.x * 3), 3, Mathf.RoundToInt(gridPosition.z * 3));
     }
 
 }
