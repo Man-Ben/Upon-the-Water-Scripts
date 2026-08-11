@@ -28,11 +28,11 @@ public class BuildManager : MonoBehaviour
         for(int i = 0; i < 5; i++)
             for(int j = 0; j < 5; j++)
             {
-                Vector3Int position = new Vector3Int(i * 3, 3 , j * 3);
+                Vector3Int placePosition = new Vector3Int(i * 3, 3 , j * 3);
 
-                Instantiate(BuildingCategories.Instance.raftTiles[0], position, quaternion.identity);
+                Instantiate(BuildingCategories.Instance.raftTiles[0], placePosition, Quaternion.identity);
                 
-                OccupiedCells.Add(position, BuildingCategories.Instance.raftTiles[0]); 
+                OccupiedCells.Add(new Vector3Int(i, 3, j), BuildingCategories.Instance.raftTiles[0]);
             }
     }
 
@@ -44,9 +44,7 @@ public class BuildManager : MonoBehaviour
         {
             for(int j = 0; j < JsonManager.Instance.buildingCatalog[category][index].footprint.y; j++)
             {
-                Vector3Int cell = BuildGuideManager.Instance.gridPosition + new Vector3Int(i * 3, 3, j * 3);
-
-                Debug.Log(BuildingRules.Instance.IsCellFree(cell));
+                Vector3Int cell = BuildGuideManager.Instance.gridPosition + new Vector3Int(i, 0, j);
 
                 if(!BuildingRules.Instance.IsCellFree(cell))
                 {

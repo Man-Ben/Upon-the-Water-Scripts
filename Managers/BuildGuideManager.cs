@@ -52,16 +52,16 @@ public class BuildGuideManager : MonoBehaviour
     public void FollowMouse(GameObject guideObject)
     {
         Ray ray = Camera.main.ScreenPointToRay(Input.mousePosition);
+        Vector3 position = new Vector3(0, 0, 0);
 
         if(Physics.Raycast(ray, out RaycastHit hit))
         {
-            Vector3 position = hit.point;
-            position.y = 3;
+            position = hit.point;
+        }
 
             gridPosition = WorldToCell(position);
 
-            guideObject.transform.position = CellToWorld(gridPosition) + Vector3.up * 1;
-        }
+            guideObject.transform.position = CellToWorld(gridPosition) + Vector3.up * 1f;
     }
 
     Vector3Int WorldToCell(Vector3 mousePosition)
