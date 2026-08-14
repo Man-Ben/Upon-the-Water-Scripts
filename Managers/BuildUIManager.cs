@@ -33,7 +33,7 @@ public class BuildUIManager : MonoBehaviour
         
         index = prefabButtons.IndexOf(button);
 
-        guideObject = BuildGuideManager.Instance.PlaceGuideObject(BuildingCategories.Instance.buildings[catByIndex][index]);
+        guideObject = BuildGuideManager.Instance.PlaceGuideObject(BuildingCategories.Instance.buildings[catByIndex][index], catByIndex, index);
 
         guideObject.GetComponent<Collider>().enabled = false;
 
@@ -53,15 +53,13 @@ public class BuildUIManager : MonoBehaviour
     {
         if(guideObject != null)
         {
-            BuildGuideManager.Instance.FollowMouse(guideObject);
+            BuildGuideManager.Instance.FollowMouse(guideObject, catByIndex, index);
         
             if(BuildManager.Instance.CanPlace(guideObject, catByIndex, index))
             {
-                
-
                 if(Input.GetMouseButtonDown(0))
                 {
-                    BuildManager.Instance.PlaceBuilding(guideObject, BuildingCategories.Instance.buildings[catByIndex][index]);
+                    BuildManager.Instance.PlaceBuilding(guideObject, BuildingCategories.Instance.buildings[catByIndex][index], catByIndex, index);
                 }
             }
 

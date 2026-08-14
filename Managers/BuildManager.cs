@@ -28,11 +28,11 @@ public class BuildManager : MonoBehaviour
         for(int i = 0; i < 5; i++)
             for(int j = 0; j < 5; j++)
             {
-                Vector3Int placePosition = new Vector3Int(i * 3, 3 , j * 3);
+                Vector3Int placePosition = new Vector3Int(i * 4, 2, j * 4);
 
                 Instantiate(BuildingCategories.Instance.raftTiles[0], placePosition, Quaternion.identity);
                 
-                OccupiedCells.Add(new Vector3Int(i, 3, j), BuildingCategories.Instance.raftTiles[0]);
+                OccupiedCells.Add(new Vector3Int(i, 2, j), BuildingCategories.Instance.raftTiles[0]);
             }
     }
 
@@ -46,6 +46,21 @@ public class BuildManager : MonoBehaviour
             {
                 Vector3Int cell = BuildGuideManager.Instance.gridPosition + new Vector3Int(i, 0, j);
 
+                if(category == Category.RaftTile)
+                {
+                    if(!BuildingRules.Instance.HasNeighbour(BuildGuideManager.Instance.gridPosition))
+                    {
+                        BuildGuideManager.Instance.ChangeColor(guideObject, Color.red);
+                        return false;
+                    }
+                }
+                else
+                    if(!BuildingRules.Instance.HasRaftBelow(BuildGuideManager.Instance.gridPosition))
+                    {
+                        BuildGuideManager.Instance.ChangeColor(guideObject, Color.red);
+                        return false;
+                    }
+
                 if(!BuildingRules.Instance.IsCellFree(cell))
                 {
                     BuildGuideManager.Instance.ChangeColor(guideObject, Color.red);
@@ -58,9 +73,9 @@ public class BuildManager : MonoBehaviour
         return true;
     }
 
-    public void PlaceBuilding(GameObject guideObject, GameObject buildingToPlace)
+    public void PlaceBuilding(GameObject guideObject, GameObject buildingToPlace, Category category, int index)
     {
-        Vector3 position = new Vector3(guideObject.transform.position.x, 3, guideObject.transform.position.z);
+        Vector3 position = new Vector3(guideObject.transform.position.x, 2 + JsonManager.Instance.buildingCatalog[category][index].buildingLayer, guideObject.transform.position.z);
 
         Instantiate(buildingToPlace, position, guideObject.transform.rotation);
         

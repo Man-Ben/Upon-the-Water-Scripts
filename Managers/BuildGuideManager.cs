@@ -19,14 +19,14 @@ public class BuildGuideManager : MonoBehaviour
         
     }
 
-    public GameObject PlaceGuideObject(GameObject buildingType)
+    public GameObject PlaceGuideObject(GameObject buildingType, Category category, int index)
     {
         Ray ray = Camera.main.ScreenPointToRay(Input.mousePosition);
 
         if(Physics.Raycast(ray, out RaycastHit hit))
         {
             Vector3 position = hit.point;
-            position.y = 3;
+            position.y = 2 + JsonManager.Instance.buildingCatalog[category][index].buildingLayer;
 
             return Instantiate(buildingType, position, transform.rotation);
         }
@@ -49,7 +49,7 @@ public class BuildGuideManager : MonoBehaviour
         
     }
 
-    public void FollowMouse(GameObject guideObject)
+    public void FollowMouse(GameObject guideObject, Category category, int index)
     {
         Ray ray = Camera.main.ScreenPointToRay(Input.mousePosition);
         Vector3 position = new Vector3(0, 0, 0);
@@ -59,19 +59,19 @@ public class BuildGuideManager : MonoBehaviour
             position = hit.point;
         }
 
-            gridPosition = WorldToCell(position);
+            gridPosition = WorldToCell(position, category, index);
 
-            guideObject.transform.position = CellToWorld(gridPosition) + Vector3.up * 1f;
+            guideObject.transform.position = CellToWorld(gridPosition, category, index) + Vector3.up * 1f;
     }
 
-    Vector3Int WorldToCell(Vector3 mousePosition)
+    Vector3Int WorldToCell(Vector3 mousePosition, Category category, int index)
     {
-        return new Vector3Int(Mathf.RoundToInt(mousePosition.x / 3), 3, Mathf.RoundToInt(mousePosition.z / 3));
+        return new Vector3Int(Mathf.RoundToInt(mousePosition.x / 4), 2 + JsonManager.Instance.buildingCatalog[category][index].buildingLayer, Mathf.RoundToInt(mousePosition.z / 4));
     }
 
-    Vector3Int CellToWorld(Vector3Int gridPosition)
+    Vector3Int CellToWorld(Vector3Int gridPosition, Category category, int index)
     {
-        return new Vector3Int(Mathf.RoundToInt(gridPosition.x * 3), 3, Mathf.RoundToInt(gridPosition.z * 3));
+        return new Vector3Int(Mathf.RoundToInt(gridPosition.x * 4), 2 + JsonManager.Instance.buildingCatalog[category][index].buildingLayer, Mathf.RoundToInt(gridPosition.z * 4));
     }
 
 }
