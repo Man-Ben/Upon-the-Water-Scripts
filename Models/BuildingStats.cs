@@ -1,12 +1,13 @@
 using System;
 using UnityEngine;
-using UnityEngine.UI;
 
 [Serializable]
 public class BuildingStats
 {
-    public int buildingLayer;
     public string buildingName;
+
+    public int buildingLayer;
+    public int capacity;
 
     public Category category;
     public Vector2Int footprint;

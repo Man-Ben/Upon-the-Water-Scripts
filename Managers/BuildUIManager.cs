@@ -60,6 +60,12 @@ public class BuildUIManager : MonoBehaviour
                 if(Input.GetMouseButtonDown(0))
                 {
                     BuildManager.Instance.PlaceBuilding(guideObject, BuildingCategories.Instance.buildings[catByIndex][index], catByIndex, index);
+
+                    if(catByIndex == Category.Water)
+                        SurvivorManager.Instance.UpdateWaterPercentage(catByIndex, index);
+                    else
+                        if(catByIndex == Category.Food)
+                            SurvivorManager.Instance.UpdateFoodPercentage(catByIndex, index);
                 }
             }
 

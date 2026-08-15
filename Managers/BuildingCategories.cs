@@ -7,8 +7,12 @@ public class BuildingCategories : MonoBehaviour
     public List<GameObject> raftTiles;
     
     [Space]
-    [Header ("Purifiers")]
+    [Header ("Water")]
     public List<GameObject> purifiers;
+
+    [Space]
+    [Header ("Food")]
+    public List<GameObject> foodProducer;
 
     [SerializeField] public Dictionary<Category, List<GameObject>> buildings;
 
@@ -31,6 +35,7 @@ public class BuildingCategories : MonoBehaviour
     {
         buildings.Add(Category.RaftTile, raftTiles);
         buildings.Add(Category.Water, purifiers);
+        buildings.Add(Category.Food, foodProducer);
     }
 
 }
