@@ -37,15 +37,16 @@ public class BuildGuideManager : MonoBehaviour
 
     public void ChangeColor(GameObject guideObject, Color inputColor)
     {
-        Renderer renderer;
+        Renderer[] renderers;
         Color color;
 
-        renderer = guideObject.GetComponent<Renderer>();
+        renderers = guideObject.GetComponentsInChildren<Renderer>();
 
         color = inputColor;
         color.a = 0.8f;
 
-        renderer.material.color = color;
+        foreach(Renderer renderer in renderers)
+            renderer.material.color = color;
         
     }
 
