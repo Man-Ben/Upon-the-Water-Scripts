@@ -45,8 +45,6 @@ public class EventManager : MonoBehaviour
 
     void MoveBack()
     {
-        Debug.DrawRay(transform.position, Vector3.back * 100f, Color.azure, 1f);
-        
         if(Physics.Raycast(transform.position, Vector3.back, 100f, raftLayer))            
             transform.position -= Vector3.back * 50f;
     }

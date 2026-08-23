@@ -14,7 +14,7 @@ public class SurvivorManager : MonoBehaviour
     [SerializeField] TextMeshProUGUI foodPercentage;
     [SerializeField] TextMeshProUGUI numberOfSurvivorsText;
 
-    int numberOfSurvivors = 10;
+    int numberOfSurvivors = 2;
 
     float totalWaterCapacity = 0;
     float totalFoodCapacity = 0;
@@ -31,33 +31,41 @@ public class SurvivorManager : MonoBehaviour
 
         Instance = this;
 
-        UpdateNumberOfSurvivors();
+        UpdateNumberOfSurvivors(0);
     }
 
-    public void UpdateFoodPercentage(Category category, int index)
+    public void UpdateSurvivorData(int modifier)
+    {
+        UpdateNumberOfSurvivors(modifier);
+        UpdateFoodPercentage(0);
+        UpdateWaterPercentage(0);
+    }
+
+    public void UpdateFoodPercentage(int modifier)
     {   
-        totalFoodCapacity += JsonManager.Instance.buildingCatalog[category][index].capacity;
+        totalFoodCapacity += modifier;
 
-        float percentage = totalFoodCapacity / numberOfSurvivors;
+        float percentage = totalFoodCapacity / numberOfSurvivors * 100f;
 
-        foodPercentageIcon.fillAmount += percentage;
 
-        foodPercentage.text = $"{percentage * 100f}%";
+        foodPercentage.text = $"{percentage:F0}%";
+        foodPercentageIcon.fillAmount = percentage / 100f;
+        
     }
     
-    public void UpdateWaterPercentage(Category category, int index)
+    public void UpdateWaterPercentage(int modifier)
     {
-        totalWaterCapacity += JsonManager.Instance.buildingCatalog[category][index].capacity;
+        totalWaterCapacity += modifier;
 
-        float percentage = totalWaterCapacity / numberOfSurvivors;
+        float percentage = totalWaterCapacity / numberOfSurvivors * 100f;
 
-        waterPercentageIcon.fillAmount += percentage;
-
-        waterPercentage.text = $"{percentage * 100f}%";
+        waterPercentage.text = $"{percentage:F0}%";
+        waterPercentageIcon.fillAmount = percentage / 100f;
     }
 
-    public void UpdateNumberOfSurvivors()
+    public void UpdateNumberOfSurvivors(int modifier)
     {
+        numberOfSurvivors += modifier;
         numberOfSurvivorsText.text = $"{numberOfSurvivors}";
     }
 }

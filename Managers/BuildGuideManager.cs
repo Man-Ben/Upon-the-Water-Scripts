@@ -56,8 +56,8 @@ public class BuildGuideManager : MonoBehaviour
         Vector3 position = new Vector3(0, 0, 0);
 
         if(Physics.Raycast(ray, out RaycastHit hit))
-        {
-            position = hit.point;
+        { 
+                position = hit.point;
         }
 
             gridPosition = WorldToCell(position, category, index);

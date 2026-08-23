@@ -35,8 +35,6 @@ public class BuildUIManager : MonoBehaviour
 
         guideObject = BuildGuideManager.Instance.PlaceGuideObject(BuildingCategories.Instance.buildings[catByIndex][index], catByIndex, index);
 
-        guideObject.GetComponent<Collider>().enabled = false;
-
         foreach(Transform child in contentTransform)
         {
             Destroy(child.gameObject);
@@ -62,10 +60,10 @@ public class BuildUIManager : MonoBehaviour
                     BuildManager.Instance.PlaceBuilding(guideObject, BuildingCategories.Instance.buildings[catByIndex][index], catByIndex, index);
 
                     if(catByIndex == Category.Water)
-                        SurvivorManager.Instance.UpdateWaterPercentage(catByIndex, index);
+                        SurvivorManager.Instance.UpdateWaterPercentage(JsonManager.Instance.buildingCatalog[catByIndex][index].capacity);
                     else
                         if(catByIndex == Category.Food)
-                            SurvivorManager.Instance.UpdateFoodPercentage(catByIndex, index);
+                            SurvivorManager.Instance.UpdateFoodPercentage(JsonManager.Instance.buildingCatalog[catByIndex][index].capacity);
                 }
             }
 
