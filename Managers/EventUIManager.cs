@@ -38,12 +38,25 @@ public class EventUIManager : MonoBehaviour
     void AddListenerToUI()
     {
         receiveSurvivors.onClick.AddListener(OnReceiveSurvivorsClicked);
+        rejectSurvivors.onClick.AddListener(OnRejectSurvivorsClicked);
     }
 
     void OnReceiveSurvivorsClicked()
     {
         SurvivorManager.Instance.UpdateSurvivorData(1);
-        
+        ShipController.Instance.shipState = ShipController.ShipState.AcceptedOnBoard;
+
+        ShipController.Instance.Docking();
+
+        newSurvivors.SetActive(false);
+    }
+
+    void OnRejectSurvivorsClicked()
+    {
+        ShipController.Instance.shipState = ShipController.ShipState.RejectedToGetOnBoard;
+
+        ShipController.Instance.TurnShip();
+
         newSurvivors.SetActive(false);
     }
 

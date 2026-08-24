@@ -12,33 +12,59 @@ public class ShipController : MonoBehaviour
     public enum ShipState
     {
         Moving,
-        ReachedPlayerRaft
+        ReachedPlayerRaft,
+        AcceptedOnBoard,
+        RejectedToGetOnBoard,
     }
 
     public ShipState shipState;
 
+    public static ShipController Instance {get; private set;}
+
+    void Awake()
+    {
+        if(Instance != null && Instance != this)
+        {
+            Destroy(gameObject);
+            return;
+        }
+
+        Instance = this;
+    }
+
     void Update()
     {
         Move();
-    }
-
-    void LateUpdate()
-    {
-        PlayerRaftReached();
+        
+        if(shipState != ShipState.RejectedToGetOnBoard && shipState == ShipState.Moving)
+            PlayerRaftReached();
     }
 
     protected void Move()
     {
-        if(shipState == ShipState.Moving)
+        if(shipState == ShipState.Moving || shipState == ShipState.RejectedToGetOnBoard)
             gameObject.transform.Translate(Vector3.back * shipSpeed * Time.deltaTime);
+
+        if(transform.position.x <= -50f)
+            Destroy(gameObject);
     }
 
     protected virtual void PlayerRaftReached()
     {
-        if(Physics.Raycast(transform.position, Vector3.back, 10f, raftLayer) && shipState == ShipState.Moving)
+        if(Physics.Raycast(transform.position, Vector3.back, 10f, raftLayer))
         {
             EventUIManager.Instance.DisplayCategory(EventUIManager.EventCategory.SurivorArrival);
             shipState = ShipState.ReachedPlayerRaft;
         }
+    }
+
+    public virtual void Docking()
+    {
+            Destroy(gameObject);
+    }
+
+    public virtual void TurnShip()
+    {
+        transform.Rotate(new Vector3(0, 90, 0));
     }
 }

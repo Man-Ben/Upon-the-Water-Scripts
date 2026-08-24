@@ -25,8 +25,8 @@ public class BuildManager : MonoBehaviour
     {
         JsonManager.Instance.ReadBuildingStats("SimpleTile");
 
-        for(int i = 0; i < 5; i++)
-            for(int j = 0; j < 5; j++)
+        for(int i = 0; i < 2; i++)
+            for(int j = 0; j < 2; j++)
             {
                 Vector3Int placePosition = new Vector3Int(i * 4, 2, j * 4);
 

@@ -38,13 +38,16 @@ public class BuildUIManager : MonoBehaviour
         foreach(Transform child in contentTransform)
         {
             Destroy(child.gameObject);
-            prefabButtons.Clear();
         }
+
+        prefabButtons.Clear();
 
         scrollView.gameObject.SetActive(false);   
         
         foreach(var category in buildCategoryButtons)
-                category.gameObject.SetActive(false);
+        {
+            category.gameObject.SetActive(false);
+        }
     }
 
     void BuildControls()
@@ -86,6 +89,8 @@ public class BuildUIManager : MonoBehaviour
                 int index = i;
 
                 buildCategoryButtons[i].gameObject.SetActive(true);
+
+                buildCategoryButtons[i].onClick.RemoveAllListeners();
                 buildCategoryButtons[i].onClick.AddListener(() => OnCategoryButtonClicked(index));
             }
         }
