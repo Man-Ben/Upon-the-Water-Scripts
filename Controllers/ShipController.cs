@@ -53,7 +53,7 @@ public class ShipController : MonoBehaviour
     {
         if(Physics.Raycast(transform.position, Vector3.back, 10f, raftLayer))
         {
-            EventUIManager.Instance.DisplayCategory(EventUIManager.EventCategory.SurivorArrival);
+            EventUIManager.Instance.DisplayEvet(EventUIManager.EventCategory.SurivorArrival);
             shipState = ShipState.ReachedPlayerRaft;
         }
     }

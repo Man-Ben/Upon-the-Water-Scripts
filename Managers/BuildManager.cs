@@ -4,7 +4,7 @@ using UnityEngine;
 
 public class BuildManager : MonoBehaviour
 {
-    [SerializeField] public Dictionary<Vector3Int, GameObject> OccupiedCells = new();
+    public Dictionary<Vector3Int, (Category category, int index)> OccupiedCells = new();
 
     public static BuildManager Instance {get; private set;}
 
@@ -32,7 +32,7 @@ public class BuildManager : MonoBehaviour
 
                 Instantiate(BuildingCategories.Instance.raftTiles[0], placePosition, Quaternion.identity);
                 
-                OccupiedCells.Add(new Vector3Int(i, 2, j), BuildingCategories.Instance.raftTiles[0]);
+                OccupiedCells.Add(new Vector3Int(i, 2, j), (Category.RaftTile, 0));
             }
     }
 
@@ -48,14 +48,14 @@ public class BuildManager : MonoBehaviour
 
                 if(category == Category.RaftTile)
                 {
-                    if(!BuildingRules.Instance.HasNeighbour(BuildGuideManager.Instance.gridPosition))
+                    if(!BuildingRules.Instance.HasNeighbour(cell))
                     {
                         BuildGuideManager.Instance.ChangeColor(guideObject, Color.red);
                         return false;
                     }
                 }
                 else
-                    if(!BuildingRules.Instance.HasRaftBelow(BuildGuideManager.Instance.gridPosition))
+                    if(!BuildingRules.Instance.HasRaftBelow(cell))
                     {
                         BuildGuideManager.Instance.ChangeColor(guideObject, Color.red);
                         return false;
@@ -79,6 +79,10 @@ public class BuildManager : MonoBehaviour
 
         Instantiate(buildingToPlace, position, guideObject.transform.rotation);
         
-        OccupiedCells.Add(BuildGuideManager.Instance.gridPosition, buildingToPlace);
+        for(int i = 0; i < JsonManager.Instance.buildingCatalog[category][index].footprint.x; i++)
+            for(int j = 0; j < JsonManager.Instance.buildingCatalog[category][index].footprint.y; j++)
+            {
+                OccupiedCells.Add(BuildGuideManager.Instance.gridPosition + new Vector3Int(i, 0, j), (category, index));
+            }
     }
 }

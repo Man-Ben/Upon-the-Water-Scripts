@@ -22,16 +22,15 @@ public class BuildGuideManager : MonoBehaviour
     public GameObject PlaceGuideObject(GameObject buildingType, Category category, int index)
     {
         Ray ray = Camera.main.ScreenPointToRay(Input.mousePosition);
+        Vector3 position = new Vector3(0, 0, 0);
 
         if(Physics.Raycast(ray, out RaycastHit hit))
-        {
-            Vector3 position = hit.point;
-            position.y = 2 + JsonManager.Instance.buildingCatalog[category][index].buildingLayer;
-
-            return Instantiate(buildingType, position, transform.rotation);
+        { 
+                position = hit.point;
         }
-
-        return null;
+        gridPosition = WorldToCell(position, category, index);
+            
+            return Instantiate(buildingType, gridPosition, transform.rotation);
     }
 
 

@@ -9,6 +9,7 @@ public class EventUIManager : MonoBehaviour
     [Header ("Buttons")]
     [SerializeField] Button receiveSurvivors;
     [SerializeField] Button rejectSurvivors;
+    [SerializeField] Button keepTheBoat;
 
     public enum EventCategory
     {
@@ -39,6 +40,8 @@ public class EventUIManager : MonoBehaviour
     {
         receiveSurvivors.onClick.AddListener(OnReceiveSurvivorsClicked);
         rejectSurvivors.onClick.AddListener(OnRejectSurvivorsClicked);
+        keepTheBoat.onClick.AddListener(OnKeepShipClicked);
+            
     }
 
     void OnReceiveSurvivorsClicked()
@@ -60,8 +63,27 @@ public class EventUIManager : MonoBehaviour
         newSurvivors.SetActive(false);
     }
 
-    public void DisplayCategory(EventCategory eventCategory)
+    public void DisplayEvet(EventCategory eventCategory)
     {
         newSurvivors.SetActive(true);
+    }
+
+    public void OnKeepShipClicked()
+    {
+        if(!HarborManager.Instance.IsAHarborPlaced())
+            Debug.Log("Harbor needed");
+
+        if(!HarborManager.Instance.IsAvailableSlot())
+            Debug.Log("Not enough space in harbor");
+        else
+        {
+            HarborManager.Instance.UpdateSlots(1);
+            SurvivorManager.Instance.UpdateSurvivorData(1);
+            ShipController.Instance.shipState = ShipController.ShipState.AcceptedOnBoard;
+
+            ShipController.Instance.Docking();
+
+            newSurvivors.SetActive(false);
+        }
     }
 }
