@@ -23,7 +23,7 @@ public class BuildManager : MonoBehaviour
 
     void LoadRaft()
     {
-        JsonManager.Instance.ReadBuildingStats("SimpleTile");
+        BuildConfigReader.Instance.ReadBuildingStats("SimpleTile");
 
         for(int i = 0; i < 2; i++)
             for(int j = 0; j < 2; j++)
@@ -40,9 +40,9 @@ public class BuildManager : MonoBehaviour
 
     public bool CanPlace(GameObject guideObject, Category category, int index)
     {
-        for(int i = 0; i < JsonManager.Instance.buildingCatalog[category][index].footprint.x; i++)
+        for(int i = 0; i < BuildConfigReader.Instance.buildingCatalog[category][index].footprint.x; i++)
         {
-            for(int j = 0; j < JsonManager.Instance.buildingCatalog[category][index].footprint.y; j++)
+            for(int j = 0; j < BuildConfigReader.Instance.buildingCatalog[category][index].footprint.y; j++)
             {
                 Vector3Int cell = BuildGuideManager.Instance.gridPosition + new Vector3Int(i, 0, j);
 
@@ -66,6 +66,12 @@ public class BuildManager : MonoBehaviour
                     BuildGuideManager.Instance.ChangeColor(guideObject, Color.red);
                     return false;
                 }
+
+                if(!BuildingRules.Instance.HasEnoughResource(category, index))
+                {
+                    BuildGuideManager.Instance.ChangeColor(guideObject, Color.red);
+                    return false;
+                }
             } 
         }
 
@@ -75,12 +81,12 @@ public class BuildManager : MonoBehaviour
 
     public void PlaceBuilding(GameObject guideObject, GameObject buildingToPlace, Category category, int index)
     {
-        Vector3 position = new Vector3(guideObject.transform.position.x, 2 + JsonManager.Instance.buildingCatalog[category][index].buildingLayer, guideObject.transform.position.z);
+        Vector3 position = new Vector3(guideObject.transform.position.x, 2 + BuildConfigReader.Instance.buildingCatalog[category][index].buildingLayer, guideObject.transform.position.z);
 
         Instantiate(buildingToPlace, position, guideObject.transform.rotation);
         
-        for(int i = 0; i < JsonManager.Instance.buildingCatalog[category][index].footprint.x; i++)
-            for(int j = 0; j < JsonManager.Instance.buildingCatalog[category][index].footprint.y; j++)
+        for(int i = 0; i < BuildConfigReader.Instance.buildingCatalog[category][index].footprint.x; i++)
+            for(int j = 0; j < BuildConfigReader.Instance.buildingCatalog[category][index].footprint.y; j++)
             {
                 OccupiedCells.Add(BuildGuideManager.Instance.gridPosition + new Vector3Int(i, 0, j), (category, index));
             }

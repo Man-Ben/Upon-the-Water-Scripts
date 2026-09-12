@@ -11,6 +11,7 @@ public class BuildingStats
 
     public Category category;
     public Vector2Int footprint;
+    public Cost cost;
 
 }
 
@@ -23,4 +24,14 @@ public enum Category
     Food,
     Expeditions,
     Defense
+}
+
+[Serializable]
+public struct Cost
+{
+    int woodCost;
+    int leafCost;
+    int plasticCost;
+    int ironCost;
+    int canonCost;
 }

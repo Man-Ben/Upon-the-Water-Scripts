@@ -66,12 +66,12 @@ public class BuildGuideManager : MonoBehaviour
 
     Vector3Int WorldToCell(Vector3 mousePosition, Category category, int index)
     {
-        return new Vector3Int(Mathf.RoundToInt(mousePosition.x / 4), 2 + JsonManager.Instance.buildingCatalog[category][index].buildingLayer, Mathf.RoundToInt(mousePosition.z / 4));
+        return new Vector3Int(Mathf.RoundToInt(mousePosition.x / 4), 2 + BuildConfigReader.Instance.buildingCatalog[category][index].buildingLayer, Mathf.RoundToInt(mousePosition.z / 4));
     }
 
     Vector3Int CellToWorld(Vector3Int gridPosition, Category category, int index)
     {
-        return new Vector3Int(Mathf.RoundToInt(gridPosition.x * 4), 2 + JsonManager.Instance.buildingCatalog[category][index].buildingLayer, Mathf.RoundToInt(gridPosition.z * 4));
+        return new Vector3Int(Mathf.RoundToInt(gridPosition.x * 4), 2 + BuildConfigReader.Instance.buildingCatalog[category][index].buildingLayer, Mathf.RoundToInt(gridPosition.z * 4));
     }
 
 }

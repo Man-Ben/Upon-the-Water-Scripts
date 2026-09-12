@@ -48,4 +48,9 @@ public class BuildingRules : MonoBehaviour
     {
         return BuildManager.Instance.OccupiedCells.ContainsKey(position + Vector3Int.down);
     }
+
+    public bool HasEnoughResource(Category category, int index)
+    {
+        return false;
+    }
 }

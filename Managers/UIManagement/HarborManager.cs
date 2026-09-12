@@ -28,7 +28,7 @@ public class HarborManager : MonoBehaviour
 
         Instance = this;
     
-        slots = JsonManager.Instance.buildingCatalog[Category.RaftTile][1].capacity;
+        slots = BuildConfigReader.Instance.buildingCatalog[Category.RaftTile][1].capacity;
         occupiedSlots = 0;
 
         UpdateSlots(0);

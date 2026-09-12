@@ -63,10 +63,10 @@ public class BuildUIManager : MonoBehaviour
                     BuildManager.Instance.PlaceBuilding(guideObject, BuildingCategories.Instance.buildings[catByIndex][index], catByIndex, index);
 
                     if(catByIndex == Category.Water)
-                        SurvivorManager.Instance.UpdateWaterPercentage(JsonManager.Instance.buildingCatalog[catByIndex][index].capacity);
+                        SurvivorManager.Instance.UpdateWaterPercentage(BuildConfigReader.Instance.buildingCatalog[catByIndex][index].capacity);
                     else
                         if(catByIndex == Category.Food)
-                            SurvivorManager.Instance.UpdateFoodPercentage(JsonManager.Instance.buildingCatalog[catByIndex][index].capacity);
+                            SurvivorManager.Instance.UpdateFoodPercentage(BuildConfigReader.Instance.buildingCatalog[catByIndex][index].capacity);
                 }
             }
 
@@ -101,7 +101,7 @@ public class BuildUIManager : MonoBehaviour
         
         catByIndex = GetCategory(index);
 
-        foreach(BuildingStats nameByCategory in JsonManager.Instance.buildingCatalog[catByIndex])
+        foreach(BuildingStats nameByCategory in BuildConfigReader.Instance.buildingCatalog[catByIndex])
         {
             var tmp = Instantiate(buildButtonPrefab, contentTransform);
 

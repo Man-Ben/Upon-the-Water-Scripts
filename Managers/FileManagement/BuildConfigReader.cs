@@ -2,9 +2,9 @@ using System;
 using System.Collections.Generic;
 using UnityEngine;
 
-public class JsonManager : MonoBehaviour
+public class BuildConfigReader : MonoBehaviour
 {
-    public static JsonManager Instance {get; private set;}
+    public static BuildConfigReader Instance {get; private set;}
 
     public BuildingStats buildingStats {get; set;}
 
