@@ -12,10 +12,12 @@ public class InventoryManager : MonoBehaviour
     [Space]
 
     [SerializeField] public Dictionary<string, int> inventory;
+    
+    public List<GameObject> inventorySlots;
 
     int baseQuantity = 30;
     
-    string[] slotNames = {"Wood", "Leaf", "Plastic", "Iron", "Cannon"};
+    string[] slotNames = {"Wood", "Leaf", "Plastic", "Stone", "Iron", "Cannon"};
 
     public static InventoryManager Instance {get; set;}
     
@@ -30,6 +32,7 @@ public class InventoryManager : MonoBehaviour
         Instance = this;
     
         DisplayInventory();
+      
     }
 
     void DisplayInventory()
@@ -42,6 +45,8 @@ public class InventoryManager : MonoBehaviour
 
             tmp.transform.Find("Name").GetComponent<TextMeshProUGUI>().text = slot.Key;
             tmp.transform.Find("Quantity").GetComponent<TextMeshProUGUI>().text = $"{slot.Value}";
+
+            inventorySlots.Add(tmp);
         }
     }
     
@@ -50,6 +55,15 @@ public class InventoryManager : MonoBehaviour
         foreach(string name in slotNames)
         {
             inventory.Add(name, baseQuantity);
+        }
+    }
+
+    public void WriteCost(Category category, int index)
+    {
+        for(int i = 0; i < inventorySlots.Count; i++)
+        {
+            if(BuildConfigReader.Instance.buildingCatalog[category][index].cost[i] != 0)
+                inventorySlots[i].transform.Find("Cost").GetComponent<TextMeshProUGUI>().text = $"{BuildConfigReader.Instance.buildingCatalog[category][index].cost[i]}";
         }
     }
 

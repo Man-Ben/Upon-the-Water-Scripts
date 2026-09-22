@@ -45,8 +45,7 @@ public class BuildConfigReader : MonoBehaviour
             buildingStats = JsonUtility.FromJson<BuildingStats>(textAsset.text);
 
             buildingCatalog[buildingStats.category].Add(buildingStats);
-        }
-            
+        }   
     }
 
 }

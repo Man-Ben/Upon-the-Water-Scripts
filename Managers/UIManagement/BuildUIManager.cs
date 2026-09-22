@@ -35,6 +35,8 @@ public class BuildUIManager : MonoBehaviour
 
         guideObject = BuildGuideManager.Instance.PlaceGuideObject(BuildingCategories.Instance.buildings[catByIndex][index], catByIndex, index);
 
+        InventoryManager.Instance.WriteCost(catByIndex, index);
+
         foreach(Transform child in contentTransform)
         {
             Destroy(child.gameObject);

@@ -29,9 +29,24 @@ public enum Category
 [Serializable]
 public struct Cost
 {
-    int woodCost;
-    int leafCost;
-    int plasticCost;
-    int ironCost;
-    int canonCost;
+    public int woodCost;
+    public int leafCost;
+    public int plasticCost;
+    public int stoneCost;
+    public int ironCost;
+    public int cannonCost;
+
+    public int this[int index]
+    {
+        get => index switch
+        {
+            0 => woodCost,
+            1 => leafCost,
+            2 => plasticCost,
+            3 => stoneCost,
+            4 => ironCost,
+            5 => cannonCost,
+            _ => throw new IndexOutOfRangeException()
+        };
+    }
 }
