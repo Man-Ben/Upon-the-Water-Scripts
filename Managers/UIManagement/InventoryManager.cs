@@ -15,7 +15,7 @@ public class InventoryManager : MonoBehaviour
     
     public List<GameObject> inventorySlots;
 
-    int baseQuantity = 30;
+    public int baseQuantity = 30;
     
     string[] slotNames = {"Wood", "Leaf", "Plastic", "Stone", "Iron", "Cannon"};
 
@@ -67,8 +67,22 @@ public class InventoryManager : MonoBehaviour
         }
     }
 
-    public void UpdateDisplay()
+    public void UpdateDisplay(Category category, int index)
     {
-        
+        for(int i = 0; i < inventorySlots.Count; i++)
+        {
+            baseQuantity -= BuildConfigReader.Instance.buildingCatalog[category][index].cost[i];
+
+            inventorySlots[i].transform.Find("Quantity").GetComponent<TextMeshProUGUI>().text = $"{baseQuantity}";
+        }
+    }
+
+    public void ClearDisplay(Category category, int index)
+    {
+        for(int i = 0; i < inventorySlots.Count; i++)
+        {
+            if(BuildConfigReader.Instance.buildingCatalog[category][index].cost[i] != 0)
+                inventorySlots[i].transform.Find("Cost").GetComponent<TextMeshProUGUI>().text = $" ";
+        }
     }
 }

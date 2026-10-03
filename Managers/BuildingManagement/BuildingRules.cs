@@ -51,6 +51,10 @@ public class BuildingRules : MonoBehaviour
 
     public bool HasEnoughResource(Category category, int index)
     {
-        return false;
+        for(int i = 0; i < 6; i++)
+            if(InventoryManager.Instance.baseQuantity - BuildConfigReader.Instance.buildingCatalog[category][index].cost[i] < 0)
+                return false;
+
+        return true;
     }
 }

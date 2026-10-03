@@ -62,6 +62,9 @@ public class BuildUIManager : MonoBehaviour
             {
                 if(Input.GetMouseButtonDown(0))
                 {
+                    InventoryManager.Instance.UpdateDisplay(catByIndex, index);
+                    InventoryManager.Instance.ClearDisplay(catByIndex, index);
+
                     BuildManager.Instance.PlaceBuilding(guideObject, BuildingCategories.Instance.buildings[catByIndex][index], catByIndex, index);
 
                     if(catByIndex == Category.Water)
@@ -74,6 +77,7 @@ public class BuildUIManager : MonoBehaviour
 
             if(Input.GetMouseButtonDown(1))
             {
+                InventoryManager.Instance.ClearDisplay(catByIndex, index);
                 Destroy(guideObject);
             }
         }  
