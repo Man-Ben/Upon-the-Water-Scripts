@@ -14,8 +14,6 @@ public class InventoryManager : MonoBehaviour
     [SerializeField] public Dictionary<string, int> inventory;
     
     public List<GameObject> inventorySlots;
-
-    public int baseQuantity = 30;
     
     string[] slotNames = {"Wood", "Leaf", "Plastic", "Stone", "Iron", "Cannon"};
 
@@ -29,10 +27,12 @@ public class InventoryManager : MonoBehaviour
             return;
         }
 
-        Instance = this;
-    
+        Instance = this;     
+    }
+
+    void Start()
+    {
         DisplayInventory();
-      
     }
 
     void DisplayInventory()
@@ -52,9 +52,29 @@ public class InventoryManager : MonoBehaviour
     
     void InitializeInventory()
     {
-        foreach(string name in slotNames)
+        for(int i = 0; i < 6; i++)
         {
-            inventory.Add(name, baseQuantity);
+            inventory.Add(slotNames[i], PlayerDataManager.Instance.playersInventory.playerInventory[i]);
+        }
+    }
+
+    public void ChangeTextColor(int index, Color color)
+    {
+        inventorySlots[index].transform.Find("Quantity").GetComponent<TextMeshProUGUI>().color = color;
+    }
+
+    public void UpdateInventoryDisplay(int nrOfUpdate)
+    {
+        while(nrOfUpdate != 0)
+        {
+            int randomIndex = Random.Range(0, 2);
+            int randomQuantity = Random.Range(5, 20);
+
+            PlayerDataManager.Instance.playersInventory.playerInventory[randomIndex] += randomQuantity;
+
+            inventorySlots[randomIndex].transform.Find("Quantity").GetComponent<TextMeshProUGUI>().text = $"{PlayerDataManager.Instance.playersInventory.playerInventory[randomIndex]}";
+
+            nrOfUpdate--;
         }
     }
 
@@ -67,17 +87,17 @@ public class InventoryManager : MonoBehaviour
         }
     }
 
-    public void UpdateDisplay(Category category, int index)
+    public void UpdateCostDisplay(Category category, int index)
     {
         for(int i = 0; i < inventorySlots.Count; i++)
         {
-            baseQuantity -= BuildConfigReader.Instance.buildingCatalog[category][index].cost[i];
+            PlayerDataManager.Instance.playersInventory.playerInventory[i] -= BuildConfigReader.Instance.buildingCatalog[category][index].cost[i];
 
-            inventorySlots[i].transform.Find("Quantity").GetComponent<TextMeshProUGUI>().text = $"{baseQuantity}";
+            inventorySlots[i].transform.Find("Quantity").GetComponent<TextMeshProUGUI>().text = $"{PlayerDataManager.Instance.playersInventory.playerInventory[i]}";
         }
     }
 
-    public void ClearDisplay(Category category, int index)
+    public void ClearCostDisplay(Category category, int index)
     {
         for(int i = 0; i < inventorySlots.Count; i++)
         {

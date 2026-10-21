@@ -13,12 +13,17 @@ public class PlayerDataManager : MonoBehaviour
             Destroy(gameObject);
             return;
         }
+
+        Instance = this;
+        
+        playersInventory = Inventory();
+
     }
 
-    public PlayerInventory Inventory()
+    public PlayersInventory Inventory()
     {
-        TextAsset textAsset = Resources.Load<TextAsset>($"Player Data");
+        TextAsset textAsset = Resources.Load<TextAsset>($"PlayerData/Inventory");
 
-        return JsonUtility.FromJson<PlayerInventory>(textAsset.text);
+        return JsonUtility.FromJson<PlayersInventory>(textAsset.text);
     }
 }

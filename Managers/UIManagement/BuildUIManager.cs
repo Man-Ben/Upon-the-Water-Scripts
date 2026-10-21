@@ -62,8 +62,7 @@ public class BuildUIManager : MonoBehaviour
             {
                 if(Input.GetMouseButtonDown(0))
                 {
-                    InventoryManager.Instance.UpdateDisplay(catByIndex, index);
-                    InventoryManager.Instance.ClearDisplay(catByIndex, index);
+                    InventoryManager.Instance.UpdateCostDisplay(catByIndex, index);
 
                     BuildManager.Instance.PlaceBuilding(guideObject, BuildingCategories.Instance.buildings[catByIndex][index], catByIndex, index);
 
@@ -77,7 +76,10 @@ public class BuildUIManager : MonoBehaviour
 
             if(Input.GetMouseButtonDown(1))
             {
-                InventoryManager.Instance.ClearDisplay(catByIndex, index);
+                for(int i = 0; i < 6; i++)
+                    InventoryManager.Instance.ChangeTextColor(i, Color.black);
+ 
+                InventoryManager.Instance.ClearCostDisplay(catByIndex, index);
                 Destroy(guideObject);
             }
         }  

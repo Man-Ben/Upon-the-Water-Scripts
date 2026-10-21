@@ -40,11 +40,20 @@ public class BuildManager : MonoBehaviour
 
     public bool CanPlace(GameObject guideObject, Category category, int index)
     {
+
+        if(!BuildingRules.Instance.HasEnoughResource(category, index))
+        {
+            BuildGuideManager.Instance.ChangeColor(guideObject, Color.red);
+            return false;
+        }
+
         for(int i = 0; i < BuildConfigReader.Instance.buildingCatalog[category][index].footprint.x; i++)
         {
             for(int j = 0; j < BuildConfigReader.Instance.buildingCatalog[category][index].footprint.y; j++)
             {
                 Vector3Int cell = BuildGuideManager.Instance.gridPosition + new Vector3Int(i, 0, j);
+
+                
 
                 if(category == Category.RaftTile)
                 {
@@ -67,11 +76,7 @@ public class BuildManager : MonoBehaviour
                     return false;
                 }
 
-                if(!BuildingRules.Instance.HasEnoughResource(category, index))
-                {
-                    BuildGuideManager.Instance.ChangeColor(guideObject, Color.red);
-                    return false;
-                }
+                
             } 
         }
 

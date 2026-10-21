@@ -28,5 +28,29 @@ public struct PlayerInventory
             5 => cannon,
             _ => throw new IndexOutOfRangeException()
         };
+        set
+        {
+            switch(index)
+            {
+                case 0:
+                    wood = value;
+                    break;
+                case 1:
+                    leaf = value;
+                    break;
+                case 2:
+                    plastic = value;
+                    break;
+                case 3:
+                    stone = value;
+                    break;
+                case 4:
+                    iron = value;
+                    break;
+                case 5:
+                    cannon = value;
+                    break;
+            }
+        }
     }
 }

@@ -1,6 +1,7 @@
 using UnityEngine.UI;
 using UnityEngine;
 using TMPro;
+using System.Collections;
 
 public class SurvivorManager : MonoBehaviour
 {
@@ -32,6 +33,31 @@ public class SurvivorManager : MonoBehaviour
         Instance = this;
 
         UpdateNumberOfSurvivors(0);
+    }
+
+    void Update()
+    {
+        CheckSurvivorData();
+    }
+
+    public void CheckSurvivorData()
+    {
+        if(numberOfSurvivors == 0)
+        {
+            Debug.Log("Game Over!");
+            return;
+        }
+
+        while(totalFoodCapacity < numberOfSurvivors || totalWaterCapacity < numberOfSurvivors)
+            KillSurvivors(1);
+    }
+
+    IEnumerator KillSurvivors(int quantity)
+    {
+        int randomDelay = Random.Range(3, 5);
+        yield return new WaitForSecondsRealtime(randomDelay);
+
+        UpdateNumberOfSurvivors(-quantity);
     }
 
     public void UpdateSurvivorData(int modifier)

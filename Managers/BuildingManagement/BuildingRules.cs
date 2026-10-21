@@ -51,10 +51,17 @@ public class BuildingRules : MonoBehaviour
 
     public bool HasEnoughResource(Category category, int index)
     {
-        for(int i = 0; i < 6; i++)
-            if(InventoryManager.Instance.baseQuantity - BuildConfigReader.Instance.buildingCatalog[category][index].cost[i] < 0)
-                return false;
+        bool isEnough = true;
 
-        return true;
+        for(int i = 0; i < 6; i++)
+            if(PlayerDataManager.Instance.playersInventory.playerInventory[i] - BuildConfigReader.Instance.buildingCatalog[category][index].cost[i] < 0)
+            {
+                InventoryManager.Instance.ChangeTextColor(i, Color.red);
+                isEnough = false;
+            }
+            else
+                InventoryManager.Instance.ChangeTextColor(i, Color.green);
+        
+        return isEnough;
     }
 }
