@@ -35,10 +35,7 @@ public class SurvivorManager : MonoBehaviour
         UpdateNumberOfSurvivors(0);
     }
 
-    void Update()
-    {
-        CheckSurvivorData();
-    }
+
 
     public void CheckSurvivorData()
     {
