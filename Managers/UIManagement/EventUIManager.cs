@@ -34,8 +34,8 @@ public class EventUIManager : MonoBehaviour
 
     void Awake()
     {
-        InitializeSingleton();
         InitializeInstances();
+        InitializeSingleton();
         AddListenerToUI();
     }
 
@@ -52,9 +52,7 @@ public class EventUIManager : MonoBehaviour
 
     void InitializeInstances()
     {
-        harborManager = HarborManager.Instance;
         inventoryManager = InventoryManager.Instance;
-        shipController = ShipController.Instance;
         survivorManager = SurvivorManager.Instance;
     }
 
@@ -68,6 +66,8 @@ public class EventUIManager : MonoBehaviour
 
     void OnReceiveSurvivorsClicked()
     {
+        shipController = ShipController.Instance;
+        
         newPeople = Random.Range(1, 3);
 
         survivorManager.UpdateSurvivorData(newPeople);
@@ -83,6 +83,8 @@ public class EventUIManager : MonoBehaviour
 
     void OnRejectSurvivorsClicked()
     {
+        shipController = ShipController.Instance;
+
         shipController.shipState = ShipController.ShipState.RejectedToGetOnBoard;
 
         shipController.TurnShip();
@@ -98,6 +100,8 @@ public class EventUIManager : MonoBehaviour
 
     void ShipArrival()
     {
+        harborManager = HarborManager.Instance;
+
         var warningText = keepTheBoat.transform.Find("Warning").GetComponent<TextMeshProUGUI>();
         if(!harborManager.IsAHarborPlaced())
             warningText.text = "Harbor needed";
@@ -112,6 +116,8 @@ public class EventUIManager : MonoBehaviour
 
     public void OnKeepShipClicked()
     {
+        shipController = ShipController.Instance;
+
         if(!harborManager.IsAHarborPlaced() || !harborManager.IsAvailableSlot())
             return;
 

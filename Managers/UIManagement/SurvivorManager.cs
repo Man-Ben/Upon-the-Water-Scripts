@@ -69,6 +69,9 @@ public class SurvivorManager : MonoBehaviour
 
             yield return new WaitForSecondsRealtime(randomDelay * 60);
          
+            if(!(totalFoodCapacity < numberOfSurvivors || totalWaterCapacity < numberOfSurvivors))
+                continue;
+            
             UpdateNumberOfSurvivors(-1);
         }
     }
