@@ -4,6 +4,9 @@ using UnityEngine.UI;
 
 public class EventUIManager : MonoBehaviour
 {
+    public static EventUIManager Instance {get; private set;}
+
+
     [Header ("Event UIs")]
     [SerializeField] GameObject newSurvivors;
 
@@ -22,11 +25,21 @@ public class EventUIManager : MonoBehaviour
 
     public EventCategory eventCategory;
 
-    public static EventUIManager Instance {get; private set;}
-
+    HarborManager harborManager;
+    InventoryManager inventoryManager;
+    ShipController shipController;
+    SurvivorManager survivorManager;
+    
     int newPeople;
 
     void Awake()
+    {
+        InitializeSingleton();
+        InitializeInstances();
+        AddListenerToUI();
+    }
+
+    void InitializeSingleton()
     {
         if(Instance != null && Instance != this)
         {
@@ -35,8 +48,14 @@ public class EventUIManager : MonoBehaviour
         }
 
         Instance = this;
+    }
 
-        AddListenerToUI();
+    void InitializeInstances()
+    {
+        harborManager = HarborManager.Instance;
+        inventoryManager = InventoryManager.Instance;
+        shipController = ShipController.Instance;
+        survivorManager = SurvivorManager.Instance;
     }
 
     void AddListenerToUI()
@@ -51,54 +70,61 @@ public class EventUIManager : MonoBehaviour
     {
         newPeople = Random.Range(1, 3);
 
-        SurvivorManager.Instance.UpdateSurvivorData(newPeople);
-        ShipController.Instance.shipState = ShipController.ShipState.AcceptedOnBoard;
+        survivorManager.UpdateSurvivorData(newPeople);
+        shipController.shipState = ShipController.ShipState.AcceptedOnBoard;
         
         int nrOfUpdates = Random.Range(1, 3);
-        InventoryManager.Instance.UpdateInventoryDisplay(nrOfUpdates);
+        inventoryManager.UpdateInventoryDisplay(nrOfUpdates);
 
-        ShipController.Instance.Docking();
+        shipController.Docking();
 
         newSurvivors.SetActive(false);
     }
 
     void OnRejectSurvivorsClicked()
     {
-        ShipController.Instance.shipState = ShipController.ShipState.RejectedToGetOnBoard;
+        shipController.shipState = ShipController.ShipState.RejectedToGetOnBoard;
 
-        ShipController.Instance.TurnShip();
+        shipController.TurnShip();
 
         newSurvivors.SetActive(false);
     }
 
     public void DisplayEvent(EventCategory eventCategory)
     {
-        if(!HarborManager.Instance.IsAHarborPlaced())
-            keepTheBoat.transform.Find("Warning").GetComponent<TextMeshProUGUI>().text = "Harbor needed";
+        if(eventCategory == EventCategory.SurivorArrival)
+            ShipArrival();
+    }
+
+    void ShipArrival()
+    {
+        var warningText = keepTheBoat.transform.Find("Warning").GetComponent<TextMeshProUGUI>();
+        if(!harborManager.IsAHarborPlaced())
+            warningText.text = "Harbor needed";
         else
-            if(!HarborManager.Instance.IsAvailableSlot())
-                keepTheBoat.transform.Find("Warning").GetComponent<TextMeshProUGUI>().text = "Not enough space in harbor";
+            if(!harborManager.IsAvailableSlot())
+                warningText.text = "Not enough space in harbor";
             else
-                keepTheBoat.transform.Find("Warning").GetComponent<TextMeshProUGUI>().text = " ";
+                warningText.text = " ";
                 
         newSurvivors.SetActive(true);
     }
 
     public void OnKeepShipClicked()
     {
-        if(!HarborManager.Instance.IsAHarborPlaced() || !HarborManager.Instance.IsAvailableSlot())
+        if(!harborManager.IsAHarborPlaced() || !harborManager.IsAvailableSlot())
             return;
 
-        HarborManager.Instance.UpdateSlots(1);
+        harborManager.UpdateSlots(1);
 
         newPeople = Random.Range(1, 3);
-        SurvivorManager.Instance.UpdateSurvivorData(newPeople);
+        survivorManager.UpdateSurvivorData(newPeople);
         
         int nrOfUpdates = Random.Range(1, 6);
-        InventoryManager.Instance.UpdateInventoryDisplay(nrOfUpdates);
+        inventoryManager.UpdateInventoryDisplay(nrOfUpdates);
             
-        ShipController.Instance.shipState = ShipController.ShipState.AcceptedOnBoard;
-        ShipController.Instance.Docking();
+        shipController.shipState = ShipController.ShipState.AcceptedOnBoard;
+        shipController.Docking();
 
         newSurvivors.SetActive(false);
     }

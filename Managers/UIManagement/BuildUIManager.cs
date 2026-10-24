@@ -15,17 +15,39 @@ public class BuildUIManager : MonoBehaviour
     [Header("Categories")]
     [SerializeField] List<Button> buildCategoryButtons = new List<Button>();
 
+    List<Button> prefabButtons = new();
+
     GameObject guideObject;
 
     Category catByIndex;
-    
+
+    BuildingCategories buildingCategories;
+    BuildConfigReader buildConfig;
+    BuildGuideManager buildGuideManager;
+    BuildManager buildManager;
+    InventoryManager inventoryManager;
+    SurvivorManager survivorManager;
+
     int index;
 
-    List<Button> prefabButtons = new();
+    void Start()
+    {
+        InitializeInstances();
+    }
 
     void Update()
     {
         BuildControls();
+    }
+
+    void InitializeInstances()
+    {
+        buildingCategories = BuildingCategories.Instance;
+        buildConfig = BuildConfigReader.Instance;
+        buildGuideManager = BuildGuideManager.Instance;
+        buildManager = BuildManager.Instance;
+        inventoryManager = InventoryManager.Instance;
+        survivorManager = SurvivorManager.Instance;
     }
 
     void OnPrefabButtonClicked(Button button)
@@ -33,9 +55,10 @@ public class BuildUIManager : MonoBehaviour
         
         index = prefabButtons.IndexOf(button);
 
-        guideObject = BuildGuideManager.Instance.PlaceGuideObject(BuildingCategories.Instance.buildings[catByIndex][index], catByIndex, index);
+        GameObject buildingType = buildingCategories.buildings[catByIndex][index];
+        guideObject = buildGuideManager.PlaceGuideObject(buildingType, catByIndex, index);
 
-        InventoryManager.Instance.WriteCost(catByIndex, index);
+        inventoryManager.WriteCost(catByIndex, index, false);
 
         foreach(Transform child in contentTransform)
         {
@@ -56,30 +79,34 @@ public class BuildUIManager : MonoBehaviour
     {
         if(guideObject != null)
         {
-            BuildGuideManager.Instance.FollowMouse(guideObject, catByIndex, index);
+            buildGuideManager.FollowMouse(guideObject, catByIndex, index);
         
-            if(BuildManager.Instance.CanPlace(guideObject, catByIndex, index))
+            if(buildManager.CanPlace(guideObject, catByIndex, index))
             {
                 if(Input.GetMouseButtonDown(0))
                 {
-                    InventoryManager.Instance.UpdateCostDisplay(catByIndex, index);
+                    inventoryManager.UpdateCostDisplay(catByIndex, index);
 
-                    BuildManager.Instance.PlaceBuilding(guideObject, BuildingCategories.Instance.buildings[catByIndex][index], catByIndex, index);
+                    GameObject objectToPlace = buildingCategories.buildings[catByIndex][index];
+
+                    buildManager.PlaceBuilding(guideObject, objectToPlace, catByIndex, index);
+
+                    int capacity = buildConfig.buildingCatalog[catByIndex][index].capacity;
 
                     if(catByIndex == Category.Water)
-                        SurvivorManager.Instance.UpdateWaterPercentage(BuildConfigReader.Instance.buildingCatalog[catByIndex][index].capacity);
+                        survivorManager.UpdateWaterPercentage(capacity);
                     else
                         if(catByIndex == Category.Food)
-                            SurvivorManager.Instance.UpdateFoodPercentage(BuildConfigReader.Instance.buildingCatalog[catByIndex][index].capacity);
+                            survivorManager.UpdateFoodPercentage(capacity);
                 }
             }
 
             if(Input.GetMouseButtonDown(1))
             {
                 for(int i = 0; i < 6; i++)
-                    InventoryManager.Instance.ChangeTextColor(i, Color.black);
+                    inventoryManager.ChangeTextColor(i, Color.black);
  
-                InventoryManager.Instance.ClearCostDisplay(catByIndex, index);
+                inventoryManager.WriteCost(catByIndex, index, true);
                 Destroy(guideObject);
             }
         }  
@@ -109,7 +136,7 @@ public class BuildUIManager : MonoBehaviour
         
         catByIndex = GetCategory(index);
 
-        foreach(BuildingStats nameByCategory in BuildConfigReader.Instance.buildingCatalog[catByIndex])
+        foreach(BuildingStats nameByCategory in buildConfig.buildingCatalog[catByIndex])
         {
             var tmp = Instantiate(buildButtonPrefab, contentTransform);
 

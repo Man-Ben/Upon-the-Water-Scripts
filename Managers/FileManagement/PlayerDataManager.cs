@@ -8,16 +8,20 @@ public class PlayerDataManager : MonoBehaviour
     
     void Awake()
     {
-        if(Instance != this && Instance != null)
+        InitializeSingleton();
+        
+        playersInventory = Inventory();
+    }
+
+    void InitializeSingleton()
+    {
+        if(Instance != null && Instance != this)
         {
             Destroy(gameObject);
             return;
         }
 
         Instance = this;
-        
-        playersInventory = Inventory();
-
     }
 
     public PlayersInventory Inventory()

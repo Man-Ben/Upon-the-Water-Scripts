@@ -9,7 +9,15 @@ public class BuildConfigReader : MonoBehaviour
     public BuildingStats buildingStats {get; set;}
 
     [SerializeField] public Dictionary<Category, List<BuildingStats>> buildingCatalog;
+    
     void Awake()
+    {
+        InitializeSingleton();
+
+        SortDataByCategory();
+    }
+
+    void InitializeSingleton()
     {
         if(Instance != null && Instance != this)
         {
@@ -18,17 +26,6 @@ public class BuildConfigReader : MonoBehaviour
         }
 
         Instance = this;
-
-        SortDataByCategory();
-    }
-
-    public BuildingStats ReadBuildingStats(string buildingID)
-    {
-        TextAsset configPath = Resources.Load<TextAsset>($"Buildings/{buildingID}");
-
-        buildingStats = JsonUtility.FromJson<BuildingStats>(configPath.text);
-
-        return buildingStats;
     }
 
     public void SortDataByCategory()

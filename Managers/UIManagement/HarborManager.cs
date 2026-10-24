@@ -4,6 +4,9 @@ using UnityEngine;
 
 public class HarborManager : MonoBehaviour
 {
+    public static HarborManager Instance {get; private set;}
+
+
     [Header ("Text")]
     [SerializeField] TextMeshProUGUI availableSlots;
     [SerializeField] TextMeshProUGUI availableShips;
@@ -16,17 +19,9 @@ public class HarborManager : MonoBehaviour
     int slots;
     int occupiedSlots;
 
-    public static HarborManager Instance {get; private set;}
-
     void Start()
     {
-        if(Instance != null && Instance != this)
-        {
-            Destroy(gameObject);
-            return;
-        }
-
-        Instance = this;
+        InitializeSingleton();
     
         slots = BuildConfigReader.Instance.buildingCatalog[Category.RaftTile][1].capacity;
         occupiedSlots = 0;
@@ -41,6 +36,17 @@ public class HarborManager : MonoBehaviour
             freeShipIndicator.SetActive(true);
             freeSlotIndicator.SetActive(true);
         }
+    }
+
+    void InitializeSingleton()
+    {
+        if(Instance != null && Instance != this)
+        {
+            Destroy(gameObject);
+            return;
+        }
+
+        Instance = this;
     }
 
     public bool IsAHarborPlaced()

@@ -5,6 +5,9 @@ using System.Collections;
 
 public class SurvivorManager : MonoBehaviour
 {
+    public static SurvivorManager Instance {get; private set;}
+
+    
     [Header ("Icons")]
     [SerializeField] Image waterPercentageIcon;
     [SerializeField] Image foodPercentageIcon;
@@ -20,9 +23,18 @@ public class SurvivorManager : MonoBehaviour
     float totalWaterCapacity = 0;
     float totalFoodCapacity = 0;
 
-    public static SurvivorManager Instance {get; private set;}
-
     void Awake()
+    {
+        InitializeSingleton();
+    }
+
+    void Start()
+    {
+        UpdateNumberOfSurvivors(0);
+        StartCoroutine(KillSurvivors());
+    }
+
+    void InitializeSingleton()
     {
         if(Instance != null && Instance != this)
         {
@@ -31,11 +43,12 @@ public class SurvivorManager : MonoBehaviour
         }
 
         Instance = this;
-
-        UpdateNumberOfSurvivors(0);
     }
 
-
+    void Update()
+    {
+        CheckSurvivorData();
+    } 
 
     public void CheckSurvivorData()
     {
@@ -44,17 +57,20 @@ public class SurvivorManager : MonoBehaviour
             Debug.Log("Game Over!");
             return;
         }
-
-        while(totalFoodCapacity < numberOfSurvivors || totalWaterCapacity < numberOfSurvivors)
-            KillSurvivors(1);
     }
 
-    IEnumerator KillSurvivors(int quantity)
+    IEnumerator KillSurvivors()
     {
-        int randomDelay = Random.Range(3, 5);
-        yield return new WaitForSecondsRealtime(randomDelay);
+        while(true)
+        {
+            yield return new WaitUntil(() => totalFoodCapacity < numberOfSurvivors || totalWaterCapacity < numberOfSurvivors); 
 
-        UpdateNumberOfSurvivors(-quantity);
+            int randomDelay = Random.Range(1, 2);
+
+            yield return new WaitForSecondsRealtime(randomDelay * 60);
+         
+            UpdateNumberOfSurvivors(-1);
+        }
     }
 
     public void UpdateSurvivorData(int modifier)

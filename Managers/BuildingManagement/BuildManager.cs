@@ -1,14 +1,32 @@
 using System.Collections.Generic;
-using Unity.Mathematics;
 using UnityEngine;
 
 public class BuildManager : MonoBehaviour
 {
-    public Dictionary<Vector3Int, (Category category, int index)> OccupiedCells = new();
-
     public static BuildManager Instance {get; private set;}
 
+    
+    BuildingCategories buildingCategories;
+    BuildConfigReader buildConfig;
+    BuildGuideManager buildGuideManager;
+    BuildingRules buildingRules;
+
+
+    public Dictionary<Vector3Int, (Category category, int index)> OccupiedCells = new();
+
+
+    void Awake()
+    {
+        InitializeSingleton();
+    }
+
     void Start()
+    {
+        InitializeInstances();
+        LoadRaft();
+    }
+
+    void InitializeSingleton()
     {
         if(Instance != null && Instance != this)
         {
@@ -17,83 +35,97 @@ public class BuildManager : MonoBehaviour
         }
 
         Instance = this;
+    }
 
-        LoadRaft();
+    void InitializeInstances()
+    {
+        buildConfig = BuildConfigReader.Instance;
+        buildingCategories = BuildingCategories.Instance;
+        buildGuideManager = BuildGuideManager.Instance;
+        buildingRules = BuildingRules.Instance;
     }
 
     void LoadRaft()
     {
-        BuildConfigReader.Instance.ReadBuildingStats("SimpleTile");
+        int chunkSize = 4;
+        int baseHeight = 2;
+        int baseRaft = 2;
 
-        for(int i = 0; i < 2; i++)
-            for(int j = 0; j < 2; j++)
+        for(int i = 0; i < baseRaft; i++)
+            for(int j = 0; j < baseRaft; j++)
             {
-                Vector3Int placePosition = new Vector3Int(i * 4, 2, j * 4);
+                Vector3Int placePosition = new Vector3Int(i * chunkSize, baseHeight, j * chunkSize);
 
-                Instantiate(BuildingCategories.Instance.raftTiles[0], placePosition, Quaternion.identity);
+                Instantiate(buildingCategories.raftTiles[0], placePosition, Quaternion.identity);
                 
-                OccupiedCells.Add(new Vector3Int(i, 2, j), (Category.RaftTile, 0));
+                OccupiedCells.Add(new Vector3Int(i, baseHeight, j), (Category.RaftTile, 0));
             }
     }
-
-
 
     public bool CanPlace(GameObject guideObject, Category category, int index)
     {
 
-        if(!BuildingRules.Instance.HasEnoughResource(category, index))
+        if(!buildingRules.HasEnoughResource(category, index))
         {
-            BuildGuideManager.Instance.ChangeColor(guideObject, Color.red);
+            buildGuideManager.ChangeColor(guideObject, Color.red);
             return false;
         }
 
-        for(int i = 0; i < BuildConfigReader.Instance.buildingCatalog[category][index].footprint.x; i++)
-        {
-            for(int j = 0; j < BuildConfigReader.Instance.buildingCatalog[category][index].footprint.y; j++)
-            {
-                Vector3Int cell = BuildGuideManager.Instance.gridPosition + new Vector3Int(i, 0, j);
+        int footprintX = buildConfig.buildingCatalog[category][index].footprint.x;
+        int footprintY = buildConfig.buildingCatalog[category][index].footprint.y;
 
-                
+        for(int i = 0; i < footprintX; i++)
+        {
+            for(int j = 0; j < footprintY; j++)
+            {
+                Vector3Int cell = buildGuideManager.gridPosition + new Vector3Int(i, 0, j);
 
                 if(category == Category.RaftTile)
                 {
-                    if(!BuildingRules.Instance.HasNeighbour(cell))
+                    if(!buildingRules.HasNeighbour(cell))
                     {
-                        BuildGuideManager.Instance.ChangeColor(guideObject, Color.red);
+                        buildGuideManager.ChangeColor(guideObject, Color.red);
                         return false;
                     }
                 }
                 else
-                    if(!BuildingRules.Instance.HasRaftBelow(cell))
+                    if(!buildingRules.HasRaftBelow(cell))
                     {
-                        BuildGuideManager.Instance.ChangeColor(guideObject, Color.red);
+                        buildGuideManager.ChangeColor(guideObject, Color.red);
                         return false;
                     }
 
-                if(!BuildingRules.Instance.IsCellFree(cell))
+
+                if(!buildingRules.IsCellFree(cell))
                 {
-                    BuildGuideManager.Instance.ChangeColor(guideObject, Color.red);
+                    buildGuideManager.ChangeColor(guideObject, Color.red);
                     return false;
                 }
-
-                
             } 
         }
 
-        BuildGuideManager.Instance.ChangeColor(guideObject, Color.green);
+        buildGuideManager.ChangeColor(guideObject, Color.green);
         return true;
     }
 
     public void PlaceBuilding(GameObject guideObject, GameObject buildingToPlace, Category category, int index)
     {
-        Vector3 position = new Vector3(guideObject.transform.position.x, 2 + BuildConfigReader.Instance.buildingCatalog[category][index].buildingLayer, guideObject.transform.position.z);
+        float x = guideObject.transform.position.x;
+        float z = guideObject.transform.position.z;
+
+        int buildingLayer = buildConfig.buildingCatalog[category][index].buildingLayer;
+
+        Vector3 position = new Vector3(x, 2 + buildingLayer, z);
 
         Instantiate(buildingToPlace, position, guideObject.transform.rotation);
         
-        for(int i = 0; i < BuildConfigReader.Instance.buildingCatalog[category][index].footprint.x; i++)
-            for(int j = 0; j < BuildConfigReader.Instance.buildingCatalog[category][index].footprint.y; j++)
+        int footprintX = buildConfig.buildingCatalog[category][index].footprint.x; 
+        int footprintY = buildConfig.buildingCatalog[category][index].footprint.y; 
+
+        for(int i = 0; i < footprintX; i++)
+            for(int j = 0; j < footprintY; j++)
             {
-                OccupiedCells.Add(BuildGuideManager.Instance.gridPosition + new Vector3Int(i, 0, j), (category, index));
+                OccupiedCells.Add(buildGuideManager.gridPosition + new Vector3Int(i, 0, j), (category, index));
             }
     }
 }

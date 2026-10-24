@@ -2,6 +2,9 @@ using UnityEngine;
 
 public class ShipController : MonoBehaviour
 {
+
+    public static ShipController Instance {get; private set;}
+
     [Header ("Speed")]
     [Range (0, 50)]
     [SerializeField] float shipSpeed;
@@ -19,17 +22,9 @@ public class ShipController : MonoBehaviour
 
     public ShipState shipState;
 
-    public static ShipController Instance {get; private set;}
-
     void Awake()
     {
-        if(Instance != null && Instance != this)
-        {
-            Destroy(gameObject);
-            return;
-        }
-
-        Instance = this;
+        InitializeSingleton();
     }
 
     void Update()
@@ -38,6 +33,17 @@ public class ShipController : MonoBehaviour
         
         if(shipState != ShipState.RejectedToGetOnBoard && shipState == ShipState.Moving)
             PlayerRaftReached();
+    }
+
+    void InitializeSingleton()
+    {
+        if(Instance != null && Instance != this)
+        {
+            Destroy(gameObject);
+            return;
+        }
+
+        Instance = this;
     }
 
     protected void Move()

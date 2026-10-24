@@ -4,6 +4,8 @@ using UnityEngine;
 
 public class EventManager : MonoBehaviour
 {
+    public static EventManager Instance {get; private set;}
+
     [Header("Layer Mask")]
     [SerializeField] LayerMask raftLayer;
 
@@ -11,17 +13,10 @@ public class EventManager : MonoBehaviour
     [Header("Events")]
     [SerializeField] List<GameObject> survivorRafts;
 
-    public static EventManager Instance {get; private set;}
 
     void Awake()
     {
-        if(Instance != null && Instance != this)
-        {
-            Destroy(gameObject);
-            return;
-        }
-
-        Instance = this;
+        InitializeSingleton();
     }
 
     void Start()
@@ -32,6 +27,17 @@ public class EventManager : MonoBehaviour
     void Update()
     {
         MoveBack(); 
+    }
+
+    void InitializeSingleton()
+    {
+        if(Instance != null && Instance != this)
+        {
+            Destroy(gameObject);
+            return;
+        }
+
+        Instance = this;
     }
 
     IEnumerator SpawnEvent()
