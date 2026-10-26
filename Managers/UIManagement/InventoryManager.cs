@@ -1,6 +1,7 @@
 using UnityEngine;
 using System.Collections.Generic;
 using TMPro;
+using System.Linq;
 
 public class InventoryManager : MonoBehaviour
 {
@@ -18,7 +19,15 @@ public class InventoryManager : MonoBehaviour
     
     public List<GameObject> inventorySlots;
 
-    string[] slotNames = {"Wood", "Leaf", "Plastic", "Stone", "Iron", "Cannon"};
+    Dictionary<string, bool> isSlotUnlocked = new Dictionary<string, bool> 
+    {
+        {"Wood", true},
+        {"Leaf", true}, 
+        {"Plastic", false}, 
+        {"Stone", false}, 
+        {"Iron", false}, 
+        {"Cannon", false}
+    };
 
     void Awake()
     {
@@ -61,28 +70,44 @@ public class InventoryManager : MonoBehaviour
     
     void InitializeInventory()
     {
-        for(int i = 0; i < 6; i++)
+        int i = 0;
+
+        foreach(var slot in isSlotUnlocked)
         {            
             PlayerDataManager playerData = PlayerDataManager.Instance;
 
-            inventory.Add(slotNames[i], playerData.playersInventory.playerInventory[i]);
+            if(slot.Value)
+                inventory.Add(slot.Key, playerData.playersInventory.playerInventory[i]);
+
+                i++;
         }
     }
 
     public void ChangeTextColor(int index, Color color)
     {
+        int unlockedSlotNr = isSlotUnlocked.Count(x => x.Value);
+
+        if(index >= unlockedSlotNr)
+            return;
+
         var quantityText = inventorySlots[index].transform.Find("Quantity").GetComponent<TextMeshProUGUI>();
         quantityText.color = color;
     }
 
     public void UpdateInventoryDisplay(int nrOfUpdate)
     {
+        int lastIndex = -1;
+        int unlockedSlotNr = isSlotUnlocked.Count(x => x.Value);
+
         while(nrOfUpdate != 0)
         {
             PlayerDataManager playerData = PlayerDataManager.Instance;
 
-            int randomIndex = Random.Range(0, 2);
+            int randomIndex = Random.Range(0, unlockedSlotNr);
             int randomQuantity = Random.Range(5, 20);
+
+            if(randomIndex == lastIndex)
+                continue;
 
             playerData.playersInventory.playerInventory[randomIndex] += randomQuantity;
 
@@ -90,6 +115,8 @@ public class InventoryManager : MonoBehaviour
             quantityText.text = $"{playerData.playersInventory.playerInventory[randomIndex]}";
 
             nrOfUpdate--;
+
+            lastIndex = randomIndex;
         }
     }
 

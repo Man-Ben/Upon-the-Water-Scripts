@@ -44,14 +44,14 @@ public class EventManager : MonoBehaviour
     {
         while(true)
         {
-            yield return new WaitForSecondsRealtime(60);
+            yield return new WaitForSecondsRealtime(20);
             Instantiate(survivorRafts[0], transform.position, Quaternion.identity);
         }
     }
 
     void MoveBack()
     {
-        if(Physics.Raycast(transform.position, Vector3.back, 100f, raftLayer))            
+        if(Physics.Raycast(transform.position, Vector3.back, 25f, raftLayer))            
             transform.position -= Vector3.back * 50f;
     }
 }

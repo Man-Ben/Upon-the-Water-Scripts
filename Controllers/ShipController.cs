@@ -51,6 +51,9 @@ public class ShipController : MonoBehaviour
         if(shipState == ShipState.Moving || shipState == ShipState.RejectedToGetOnBoard)
             gameObject.transform.Translate(Vector3.back * shipSpeed * Time.deltaTime);
 
+        if(Physics.Raycast(transform.position, Vector3.back, 10f, raftLayer) && shipState == ShipState.RejectedToGetOnBoard)
+            TurnShip();
+
         if(transform.position.x <= -50f)
             Destroy(gameObject);
     }

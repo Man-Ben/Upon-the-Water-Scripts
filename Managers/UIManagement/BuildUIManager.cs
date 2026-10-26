@@ -138,6 +138,9 @@ public class BuildUIManager : MonoBehaviour
 
         foreach(BuildingStats nameByCategory in buildConfig.buildingCatalog[catByIndex])
         {
+            if(!nameByCategory.isUnlocked)
+                continue;
+
             var tmp = Instantiate(buildButtonPrefab, contentTransform);
 
             tmp.GetComponentInChildren<TMP_Text>().text = nameByCategory.buildingName;

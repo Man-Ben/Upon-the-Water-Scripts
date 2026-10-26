@@ -9,6 +9,8 @@ public class BuildingStats
     public int buildingLayer;
     public int capacity;
 
+    public bool isUnlocked;
+
     public Category category;
     public Vector2Int footprint;
     public Cost cost;

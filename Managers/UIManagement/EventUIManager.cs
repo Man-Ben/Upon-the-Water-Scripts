@@ -68,7 +68,7 @@ public class EventUIManager : MonoBehaviour
     {
         shipController = ShipController.Instance;
         
-        newPeople = Random.Range(1, 3);
+        newPeople = Random.Range(1, 2);
 
         survivorManager.UpdateSurvivorData(newPeople);
         shipController.shipState = ShipController.ShipState.AcceptedOnBoard;

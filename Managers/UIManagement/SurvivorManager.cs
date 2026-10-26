@@ -15,7 +15,9 @@ public class SurvivorManager : MonoBehaviour
     [Space]
     [Header("Texts")]
     [SerializeField] TextMeshProUGUI waterPercentage;
+    [SerializeField] TextMeshProUGUI waterSurplus;
     [SerializeField] TextMeshProUGUI foodPercentage;
+    [SerializeField] TextMeshProUGUI foodSurplus;
     [SerializeField] TextMeshProUGUI numberOfSurvivorsText;
 
     int numberOfSurvivors = 2;
@@ -30,7 +32,6 @@ public class SurvivorManager : MonoBehaviour
 
     void Start()
     {
-        UpdateNumberOfSurvivors(0);
         StartCoroutine(KillSurvivors());
     }
 
@@ -72,7 +73,7 @@ public class SurvivorManager : MonoBehaviour
             if(!(totalFoodCapacity < numberOfSurvivors || totalWaterCapacity < numberOfSurvivors))
                 continue;
             
-            UpdateNumberOfSurvivors(-1);
+            UpdateSurvivorData(-1);
         }
     }
 
@@ -89,10 +90,15 @@ public class SurvivorManager : MonoBehaviour
 
         float percentage = totalFoodCapacity / numberOfSurvivors * 100f;
 
-
-        foodPercentage.text = $"{percentage:F0}%";
-        foodPercentageIcon.fillAmount = percentage / 100f;
+        if(percentage < 100 )
+            foodPercentage.text = $"Food supply: {percentage:F0}%";
+        else
+            foodPercentage.text = $"Food supply: 100%";
         
+
+        foodSurplus.text = $"Surplus: {totalFoodCapacity - numberOfSurvivors}";
+
+        foodPercentageIcon.fillAmount = percentage / 100f;
     }
     
     public void UpdateWaterPercentage(int modifier)
@@ -100,8 +106,13 @@ public class SurvivorManager : MonoBehaviour
         totalWaterCapacity += modifier;
 
         float percentage = totalWaterCapacity / numberOfSurvivors * 100f;
-
-        waterPercentage.text = $"{percentage:F0}%";
+    
+        if(percentage < 100)
+            waterPercentage.text = $"Water supply {percentage:F0}%";
+        else
+            waterPercentage.text = $"Water supply 100%";
+        
+        waterSurplus.text = $"Surplus: {totalWaterCapacity - numberOfSurvivors}";
         waterPercentageIcon.fillAmount = percentage / 100f;
     }
 
